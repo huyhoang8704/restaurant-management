@@ -3,11 +3,11 @@ require('dotenv').config()
 const database = require('./config/database');
 
 
-
 const app = express()
-const port = 3000;
+const port = process.env.PORT;
 
-
+const userRoute = require('./routes/index.route')
+userRoute(app)
 
 // Conect DB
 database.connect();
