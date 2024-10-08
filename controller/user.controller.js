@@ -109,6 +109,28 @@ const login = async (req, res) => {
     })
 
 }
+const updateUser = async (req, res) => {
+    try {
+        const id = req.params.id
+        const updateIn4 = req.body
+
+        const data = await User.updateOne({
+            _id : id
+        }, {
+            $set : updateIn4
+        })
+        const updatedUser = await User.findOne({ _id: id }).select("-password");
+        res.status(200).json({
+            message : "Cập nhật thông tin thành công!",
+            user : updatedUser
+        })
+    } catch (error) {
+        res.status(400).json({
+            message : "Error!",
+            error : error
+        })
+    } 
+}
 
 
 module.exports = {
@@ -116,4 +138,5 @@ module.exports = {
     getUsers,
     register,
     login,
+    updateUser,
 }

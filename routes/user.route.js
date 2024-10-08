@@ -8,6 +8,8 @@ router.get('/', controller.getUsers)
 
 router.get('/:id' , controller.getUser)
 
+router.patch('/:id' , controller.updateUser)
+
 router.post('/register' , controller.register)
 
 router.post('/login' , controller.login)
