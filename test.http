@@ -1,3 +1,15 @@
 ### Get User
-GET http://localhost:3000/user
+GET http://localhost:3000/users
 
+### Register User
+
+POST http://localhost:3000/users/register
+
+Content-Type: application/json
+
+{
+      "fullname": "hoang",
+      "email": "hoang@gmail.com",
+      "phone" : "0584851136",
+      "password": "123"
+}
