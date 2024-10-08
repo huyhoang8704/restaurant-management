@@ -21,6 +21,27 @@ const getUsers = async (req, res) => {
         })
     } 
 }
+const getUser = async (req, res) => {
+    try {
+        const id = req.params.id
+
+        const user = await User.findOne({
+            _id : id,
+            deleted : false
+        }).select("fullname email phone")
+
+        res.status(200).json({
+            message : "Thông tin user!",
+            user : user,
+        })
+    } catch (error) {
+        res.status(400).json({
+            message : "Error!",
+            error : error
+        })
+    } 
+    
+}
 const register = async (req, res) => {
     try {
         const existEmail = await User.findOne({
@@ -91,6 +112,7 @@ const login = async (req, res) => {
 
 
 module.exports = {
+    getUser,
     getUsers,
     register,
     login,

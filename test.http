@@ -1,5 +1,11 @@
-### Get User
+### Get Users
 GET http://localhost:3000/users
+
+### Get User
+GET http://localhost:3000/users/:id
+
+examples: http://localhost:3000/users/670568ed3fceba943d0c0c8f
+
 
 ### Register User
 
