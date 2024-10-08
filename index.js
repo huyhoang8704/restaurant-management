@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
-const database = require('./config/database');
+const database = require('./config/mongoDB.database');
 
 const app = express();
 const port = process.env.PORT;
