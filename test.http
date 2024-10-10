@@ -2,7 +2,7 @@
 GET http://localhost:3000/users
 
 ### Get User
-GET http://localhost:3000/users/:id
+GET http://localhost:3000/users/670568ed3fceba943d0c0c8f
 
 examples: http://localhost:3000/users/670568ed3fceba943d0c0c8f
 
