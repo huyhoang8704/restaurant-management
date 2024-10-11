@@ -17,7 +17,7 @@ const getUsers = async (req, res) => {
         res.json({
             code : 400,
             message : "Error!",
-            error : error
+            error : error.message
         })
     } 
 }
@@ -37,7 +37,7 @@ const getUser = async (req, res) => {
     } catch (error) {
         res.status(400).json({
             message : "Error!",
-            error : error
+            error : error.message
         })
     } 
     
@@ -75,7 +75,7 @@ const register = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             message : "Đăng ký thất bại!",
-            error : error
+            error : error.message
         })
     } 
 }
@@ -128,7 +128,7 @@ const updateUser = async (req, res) => {
     } catch (error) {
         res.status(400).json({
             message : "Error!",
-            error : error
+            error : error.message
         })
     } 
 }
