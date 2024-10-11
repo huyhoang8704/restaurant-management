@@ -14,16 +14,17 @@ POST http://localhost:3000/users/register
 Content-Type: application/json
 
 {
-      "fullname": "hoang",
-      "email": "hoang@gmail.com",
-      "phone" : "0584851136",
-      "password": "123"
+      "fullname": "abc",
+      "email": "abc@gmail.com",
+      "phone" : "1234567890",
+      "password": "123",
+      "address" : "Thủ Đức TPHCM"
 }
 
 ### Login
 POST http://localhost:3000/users/login
 
-Content-Type: application/json
+# Content-Type: application/json
 
 {
       "email": "hoang@gmail.com",
@@ -32,10 +33,10 @@ Content-Type: application/json
 
 ### Update User
 
-PATCH http://localhost:3000/users/:id
+PATCH http://localhost:3000/users/670568ed3fceba943d0c0c8f
 
 Content-Type: application/json
 
 {
-      "phone" : "abc"
+      "address" : "Quận 12"
 }

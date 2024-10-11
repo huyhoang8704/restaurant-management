@@ -58,6 +58,7 @@ const register = async (req, res) => {
                 email : req.body.email,
                 password : req.body.password,
                 phone : req.body.phone,
+                address : req.body.address,
                 token : generateHelper.generateRandomString(20)
             });
             const data = await user.save();
