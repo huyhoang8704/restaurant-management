@@ -4,7 +4,7 @@ GET http://localhost:3000/users
 ### Get User
 GET http://localhost:3000/users/670568ed3fceba943d0c0c8f
 
-examples: http://localhost:3000/users/670568ed3fceba943d0c0c8f
+examples: http://localhost:3000/users/:id
 
 
 ### Register User
@@ -34,6 +34,8 @@ POST http://localhost:3000/users/login
 ### Update User
 
 PATCH http://localhost:3000/users/670568ed3fceba943d0c0c8f
+
+examples : http://localhost:3000/users/:id
 
 Content-Type: application/json
 
