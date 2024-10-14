@@ -1,8 +1,8 @@
-### Get Users
-GET http://localhost:3000/users
+### Get All Users
+GET http://localhost:3000/users/list
 
 ### Get User
-GET http://localhost:3000/users/670568ed3fceba943d0c0c8f
+GET http://localhost:3000/users/detail/670568ed3fceba943d0c0c8f
 
 examples: http://localhost:3000/users/:id
 
@@ -31,11 +31,11 @@ POST http://localhost:3000/users/login
       "password": "123"
 }
 
-### Update User
+### Edit User
 
-PATCH http://localhost:3000/users/670568ed3fceba943d0c0c8f
+PATCH http://localhost:3000/users/edit/670568ed3fceba943d0c0c8f
 
-examples : http://localhost:3000/users/:id
+examples : http://localhost:3000/users/edit/:id
 
 Content-Type: application/json
 

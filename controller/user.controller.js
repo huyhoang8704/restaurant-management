@@ -28,7 +28,7 @@ const getUser = async (req, res) => {
         const user = await User.findOne({
             _id : id,
             deleted : false
-        }).select("fullname email phone")
+        }).select("fullname email phone address role token")
 
         res.status(200).json({
             message : "Thông tin user!",
@@ -107,6 +107,7 @@ const login = async (req, res) => {
     res.status(200).json({
         message : "Đăng nhập thành công!",
         user : user.fullname,
+        token : token,
     })
 
 }
