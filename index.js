@@ -4,6 +4,8 @@ const cookieParser = require('cookie-parser');
 require('dotenv').config();
 const database = require('./config/mongoDB.database');
 
+const clientRoute = require('./routes/client/index.route');
+
 const app = express();
 const port = process.env.PORT;
 
@@ -17,9 +19,8 @@ app.use(cookieParser());
 // Conect DB
 database.connect();
 
-// Import routes sau khi middleware đã được cấu hình
-const userRoute = require('./routes/index.route');
-userRoute(app);
+// Import routes 
+clientRoute(app);
 
 app.get('/', (req, res) => {
     res.send('Restaurant Management System');
