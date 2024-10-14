@@ -133,7 +133,19 @@ const updateUser = async (req, res) => {
         })
     } 
 }
-
+const logout = async (req, res) => {
+    try {
+        res.clearCookie("token");
+        res.status(200).json({
+            message : "Đăng xuất thành công!",
+        })
+    } catch (error) {
+        res.status(400).json({
+            message : "Error!",
+            error : error.message
+        })
+    } 
+}
 
 module.exports = {
     getUser,
@@ -141,4 +153,5 @@ module.exports = {
     register,
     login,
     updateUser,
+    logout,
 }
