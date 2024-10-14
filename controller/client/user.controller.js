@@ -1,6 +1,6 @@
-const User = require('../models/user.model')
+const User = require('../../models/user.model')
 
-const generateHelper = require('../helpers/generateHelper')
+const generateHelper = require('../../helpers/generateHelper')
 
 
 const getUsers = async (req, res) => {
