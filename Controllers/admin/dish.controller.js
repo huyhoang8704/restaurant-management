@@ -25,19 +25,18 @@ const getDishes = async (req, res) => {
 
 const getDish = async (req, res) => {
     try {
-        const dishname = req.params.name; 
+        const slugDish = req.params.slugDish; 
         const dish = await Dish.findOne({
-            name: dishname
-        }).select("name description like price")
+            slug: slugDish,
+            deleted : false
+        }).select("name description like price imageUrl category")
 
-        res.json({
-            code : 200,
+        res.status(200).json({
             message : "Success!",
             data : dish
         })
     } catch (error) {
-        res.json({
-            code: 400,
+        res.status(400).json({
             message: "Error!",
             error: error.message
         })

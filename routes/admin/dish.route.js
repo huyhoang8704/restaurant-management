@@ -7,7 +7,7 @@ const router = express.Router()
 // router.delete('/delete/:id',controller.deleteItem)
 
 
-router.get('/detail/:name', controller.getDish),
+router.get('/detail/:slugDish', controller.getDish),
     
 router.get('/list', controller.getDishes),
     
