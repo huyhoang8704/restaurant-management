@@ -5,6 +5,7 @@ require('dotenv').config();
 const database = require('./config/mongoDB.database');
 
 const clientRoute = require('./routes/client/index.route');
+const adminRoute = require('./routes/admin/index.route');
 
 const app = express();
 const port = process.env.PORT;
@@ -21,6 +22,8 @@ database.connect();
 
 // Import routes 
 clientRoute(app);
+adminRoute(app);
+
 
 app.get('/', (req, res) => {
     res.send('Restaurant Management System');

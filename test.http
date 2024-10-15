@@ -42,3 +42,30 @@ Content-Type: application/json
 {
       "address" : "Quận 12"
 }
+
+
+
+### Get all dishes
+GET       http://localhost:3000/admin/dishes/list 
+
+
+### Get dish
+GET       http://localhost:3000/admin/dishes/detail/:name
+Example   http://localhost:3000/admin/dishes/detail/Fish
+
+### Add dish
+POST      http://localhost:3000/admin/dishes/add
+Example    
+{
+      "name" : "Meat",
+      "description": "beef",
+      "price": 1000000,
+      "category": "Main Course",
+      "like": 22,
+      "deleted": false
+}
+
+### Edit dish
+PATCH       http://localhost:3000/admin/dishes/edit/:name
+Example     http://localhost:3000/admin/dishes/edit/Meat
+>>>>>>> ea65ad8 (Thêm các routes, controllers cho dish và thêm nó vào trong file index chính.)
