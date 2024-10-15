@@ -118,7 +118,25 @@ const updateDish = async (req, res) => {
     }
 };
 
-
+const deleteDish = async (req, res) => {
+    try {
+        const slugDish = req.params.slugDish;
+        const deletedDish = await Dish.findOneAndUpdate(
+            { slug: slugDish },
+            { $set: { deleted: true } },
+            { new: true }
+        );
+        res.status(200).json({
+            message: "Xóa món ăn thành công!",
+            dish: deletedDish,
+        });
+    } catch (error) {
+        res.status(400).json({
+            message: "Error!",
+            error: error.message,
+        });
+    }
+};
 
 
 
@@ -127,5 +145,6 @@ module.exports = {
     getDishes,
     createDish,
     getDish,
-    updateDish
+    updateDish,
+    deleteDish,
 }
