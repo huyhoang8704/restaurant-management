@@ -13,6 +13,6 @@ router.get('/list', controller.getDishes),
     
 router.patch('/edit/:name', controller.updateDish),
     
-router.post('/add', controller.addDish),
+router.post('/create', controller.createDish),
 
 module.exports = router;

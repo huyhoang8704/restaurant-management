@@ -45,7 +45,7 @@ const getDish = async (req, res) => {
 }
 
 // addDish
-const addDish = async (req, res) => {
+const createDish = async (req, res) => {
     try {
         const existDish = await Dish.findOne({
             name : req.body.name,
@@ -56,17 +56,18 @@ const addDish = async (req, res) => {
                 message : "Món ăn đã tồn tại",
             })
         } else {
+
             const dish = new Dish({
                 name : req.body.name,
                 description: req.body.description,
                 price: req.body.price,
                 category: req.body.category,
+                imageUrl: req.body.imageUrl,
                 like: req.body.like,
-                deleted: req.body.deleted,
             });
             const data = await dish.save();
             const name = data.name
-            res.cookie("name", name)
+            // res.cookie("name", name) //!
 
 
             res.status(201).json({
@@ -121,7 +122,7 @@ const updateDish = async (req, res) => {
 module.exports = {
     index,
     getDishes,
-    addDish,
+    createDish,
     getDish,
     updateDish
 }

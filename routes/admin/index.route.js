@@ -8,5 +8,5 @@ module.exports = (app) => {
     const PATH = systemConfig.prefixAdmin  // prefix admin
 
     app.use(PATH + "/dashboard", dashboard);
-    app.use(PATH + "/dishes", dish);
+    app.use(PATH + "/dish", dish);
 }

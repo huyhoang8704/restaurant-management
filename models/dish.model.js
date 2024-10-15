@@ -1,10 +1,18 @@
 const mongoose = require('mongoose');
 
+const slugify = require('slugify');
+
+
 const DishSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'Dish name is required'],
         trim: true
+    },
+    slug: { 
+        type: String, 
+        slug: "name",
+        unique: true
     },
     description: {
         type: String,
@@ -30,11 +38,20 @@ const DishSchema = new mongoose.Schema({
     },
     deleted: {    // stock or not
         type: Boolean,
-        default: true
+        default: false
     }
 }, {
     timestamps: true
 });
+
+// Middleware để tự động tạo slug trước khi lưu vào cơ sở dữ liệu
+DishSchema.pre('save', function(next) {
+    if (this.isModified('name') || this.isNew) {
+        this.slug = slugify(this.name, { lower: true, strict: true });
+    }
+    next();
+});
+
 
 const Dish = mongoose.model('Dish', DishSchema , "dish");
 
