@@ -11,7 +11,7 @@ router.get('/detail/:slugDish', controller.getDish),
     
 router.get('/list', controller.getDishes),
     
-router.patch('/edit/:name', controller.updateDish),
+router.patch('/edit/:slugDish', controller.updateDish),
     
 router.post('/create', controller.createDish),
 

@@ -84,12 +84,16 @@ const createDish = async (req, res) => {
 
 const updateDish = async (req, res) => {
     try {
-        const dishname = req.params.name;
+        const slugDish = req.params.slugDish;
         const updateInf = req.body;
 
+        // console.log(slugDish)
+
         const existingDish = await Dish.findOne({
-            name: dishname
+            slug: slugDish,
+            deleted: false,
         });
+
         if (!existingDish) {
             return res.status(404).json({
                 message: "Món ăn không tồn tại!",
@@ -97,7 +101,7 @@ const updateDish = async (req, res) => {
         }
 
         const updatedDish = await Dish.findOneAndUpdate(
-            { name: dishname },
+            { slug : slugDish },
             { $set: updateInf },
             { new: true, fields: '-name' }
         );
