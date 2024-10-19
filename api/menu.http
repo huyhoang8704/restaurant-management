@@ -2,6 +2,6 @@
 
 GET http://localhost:3000/menu
 
-### Tìm kiếm món ăn
+# Tìm kiếm món ăn
 
-GET http://localhost:3000/menu?keyword=Bún bò
+GET http://localhost:3000/menu?keyword=Bún bo
