@@ -23,6 +23,11 @@ const DishSchema = new mongoose.Schema({
         required: [true, 'Dish price is required'],
         min: [0, 'Price must be a positive number']
     },
+    slugCategory: { 
+        type: String, 
+        slug: "category",
+        unique: true
+    },
     category: {
         type: String,
         enum: ['Appetizer', 'Main Course', 'Dessert', 'Drink'],
@@ -48,6 +53,9 @@ const DishSchema = new mongoose.Schema({
 DishSchema.pre('save', function(next) {
     if (this.isModified('name') || this.isNew) {
         this.slug = slugify(this.name, { lower: true, strict: true });
+    }
+    if (this.isModified('category') || this.isNew) {
+        this.slugCategory = slugify(this.category, { lower: true, strict: true });
     }
     next();
 });
