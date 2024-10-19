@@ -11,8 +11,15 @@ const index = async (req, res) => {
     if(req.query.keyword){
         find.name = searchHelper(req);
     }
+    // Sort Dishes
+    let sort = {};
+    if(req.query.sortKey && req.query.sortValue){
+        sort[req.query.sortKey] = req.query.sortValue
+    } else {
+        sort.like = "desc"
+    }
 
-    const dishes = await Dish.find(find)
+    const dishes = await Dish.find(find).sort(sort)
     res.status(200).json({
         message : "Success!",
         data : dishes
@@ -28,6 +35,14 @@ const getCategory = async (req, res) => {
     if(req.query.keyword){
         find.name = searchHelper(req);
     }
+    // Sort Dishes
+    let sort = {};
+    if(req.query.sortKey && req.query.sortValue){
+        sort[req.query.sortKey] = req.query.sortValue
+    } else {
+        sort.like = "desc"
+    }
+    
     const dishes = await Dish.find(find)
     res.status(200).json({
         message : "Success!",
