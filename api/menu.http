@@ -2,6 +2,10 @@
 
 GET http://localhost:3000/menu
 
-# Tìm kiếm món ăn
+### Tìm kiếm món ăn
 
-GET http://localhost:3000/menu?keyword=Bún bo
+GET http://localhost:3000/menu?keyword=banhbao
+
+### Get dishes by category
+
+GET http://localhost:3000/menu/main-course?keyword=pizza

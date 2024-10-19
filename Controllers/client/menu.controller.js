@@ -1,5 +1,5 @@
+const searchHelper = require("../../helpers/searchHelper")
 const Dish = require("../../models/dish.model")
-
 
 
 
@@ -9,14 +9,8 @@ const index = async (req, res) => {
     }
     // Search dishes
     if(req.query.keyword){
-        const keyword = req.query.keyword
-        const regex = new RegExp(keyword, "i")
-        find.name = regex
+        find.name = searchHelper(req);
     }
-
-
-
-
 
     const dishes = await Dish.find(find)
     res.status(200).json({
@@ -25,7 +19,23 @@ const index = async (req, res) => {
     })
 
 }
+const getCategory = async (req, res) => {
+    let find = {
+        deleted : false,
+        slugCategory : req.params.slugCategory
+    }
+    // Search dishes
+    if(req.query.keyword){
+        find.name = searchHelper(req);
+    }
+    const dishes = await Dish.find(find)
+    res.status(200).json({
+        message : "Success!",
+        data : dishes
+    })
+}
 
 module.exports = {
     index,
+    getCategory,
 }
