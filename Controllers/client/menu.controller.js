@@ -34,8 +34,22 @@ const getCategory = async (req, res) => {
         data : dishes
     })
 }
+const getDish = async (req, res) => {
+    let find = {
+        deleted : false,
+        slug : req.params.slug
+    }
+
+
+    const dish = await Dish.findOne(find)
+    res.status(200).json({
+        message : "Success!",
+        dish : dish
+    })
+}
 
 module.exports = {
     index,
     getCategory,
+    getDish,
 }
