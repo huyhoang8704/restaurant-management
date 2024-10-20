@@ -1,4 +1,5 @@
 const User = require('../../models/user.model')
+const Cart = require('../../models/cart.model')
 
 const generateHelper = require('../../helpers/generateHelper')
 
@@ -104,10 +105,31 @@ const login = async (req, res) => {
     }
     const token = user.token;
     res.cookie("token" , token);
+
+    // Sau khi người dùng đăng nhập thành công tạo CartID cho khách hàng
+    let cart = {};
+    if(!req.cookies.cart_id) {
+        cart = new Cart({
+            customer_id : user._id,  // Lưu id của khách hàng vào cart
+            dishes : [],
+            totalAmount : 0,
+        });
+        await cart.save();
+        res.cookie("cart_id", cart.id , {
+            expires : new Date(Date.now() + 1000 * 60 * 60 * 24),
+        });
+    } else {
+        cart = await Cart.findOne({
+            _id : req.cookies.cart_id
+        });
+    }
+
+
     res.status(200).json({
         message : "Đăng nhập thành công!",
         user : user.fullname,
         token : token,
+        cart : cart
     })
 
 }
