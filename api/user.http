@@ -45,3 +45,26 @@ Content-Type: application/json
 {
       "address" : "Quận 12"
 }
+
+
+### Request OTP
+POST http://localhost:3000/users/request_Otp
+
+Content-Type: application/json
+
+{
+      "email": "abc@gmail.com",
+}
+
+
+
+### Verify OTP and change password
+POST http://localhost:3000/users/verify_Otp 
+
+Content-Type: application/json
+
+{
+    "email": "abc@gmail.com",
+    "otp": "123456",
+    "newPassword" : "dfg"
+}
