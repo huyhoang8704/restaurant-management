@@ -108,21 +108,29 @@ const login = async (req, res) => {
 
     // Sau khi người dùng đăng nhập thành công tạo CartID cho khách hàng
     let cart = {};
-    if(!req.cookies.cart_id) {
-        cart = new Cart({
-            customer_id : user._id,  // Lưu id của khách hàng vào cart
-            dishes : [],
-            totalAmount : 0,
-        });
-        await cart.save();
-        res.cookie("cart_id", cart.id , {
-            expires : new Date(Date.now() + 1000 * 60 * 60 * 24),
-        });
+    const userCart = await Cart.findOne({
+        customer_id : user._id
+    })
+    // Kiểm tra xem khách hàng có giỏ hàng đó chưa
+    if(!userCart) {
+        if(!req.cookies.cart_id) {
+            cart = new Cart({
+                customer_id : user._id,  // Lưu id của khách hàng vào cart
+                dishes : [],
+                totalAmount : 0,
+            });
+            await cart.save();
+        } else {
+            cart = await Cart.findOne({
+                _id : req.cookies.cart_id
+            });
+        }
     } else {
-        cart = await Cart.findOne({
-            _id : req.cookies.cart_id
-        });
+        cart = userCart
     }
+    res.cookie("cart_id", cart.id , {
+        expires : new Date(Date.now() + 1000 * 60 * 60 * 24),
+    });
 
 
     res.status(200).json({

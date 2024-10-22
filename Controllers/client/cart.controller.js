@@ -2,7 +2,13 @@ const Cart = require('../../models/cart.model')
 const Dish = require('../../models/dish.model')
 
 const index = async (req, res) => {
-    res.send('Trang giỏ hàng');
+    const cart_id = req.cookies.cart_id;
+    const cart = await Cart.findOne({
+        _id : cart_id
+    })
+    res.json({
+        cart : cart
+    })
 }
 const addToCart = async (req, res) => {
     try {
