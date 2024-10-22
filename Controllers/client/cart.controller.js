@@ -2,13 +2,38 @@ const Cart = require('../../models/cart.model')
 const Dish = require('../../models/dish.model')
 
 const index = async (req, res) => {
-    const cart_id = req.cookies.cart_id;
-    const cart = await Cart.findOne({
-        _id : cart_id
-    })
-    res.json({
-        cart : cart
-    })
+    try {
+        const cart_id = req.cookies.cart_id;
+        const cart = await Cart.findOne({
+            _id : cart_id
+        })
+        // CartDetail để show cho FrontEnd
+        const cartDetail = {
+            dishes : [],
+        }
+        for (const item of cart.dishes) {
+            const dish = await Dish.findOne({ _id: item.dish_id });
+            const object = {
+                name : dish.name,
+                price : dish.price,
+                quantity : item.quantity,
+                category : dish.category,
+                imageUrl : dish.imageUrl,
+            }
+            cartDetail.dishes.push(object);
+        }
+        cartDetail.totalAmount = cart.totalAmount
+    
+        res.status(200).json({
+            cart : cartDetail
+        })
+    } catch (error) {
+        res.json({
+            code : 400,
+            message : "Error!",
+            error : error
+        })
+    } 
 }
 const addToCart = async (req, res) => {
     try {
