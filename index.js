@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const cors = require('cors')
 require('dotenv').config();
 const database = require('./config/mongoDB.database');
 
@@ -13,6 +14,8 @@ const port = process.env.PORT;
 // Body-parser middleware nên được gọi trước các tuyến
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(cors())
 
 // Cookie-parser middleware
 app.use(cookieParser());
