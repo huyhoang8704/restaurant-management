@@ -1,0 +1,19 @@
+const index = async (req, res) => {
+    try {
+        const cart_id = req.cookies.cart_id;
+        const cart = await Cart.findOne({
+            _id : cart_id
+        })
+        showCartDetail.showCartDetail(cart, cartDetail)
+    
+        res.status(200).json({
+            cart : cartDetail
+        })
+    } catch (error) {
+        res.json({
+            code : 400,
+            message : "Error!",
+            error : error.message
+        })
+    } 
+}

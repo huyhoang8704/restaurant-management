@@ -1,6 +1,8 @@
 const Cart = require('../../models/cart.model')
 const Dish = require('../../models/dish.model')
 
+const showCartDetail = require('../../helpers/cartDetailHelper')
+
 const index = async (req, res) => {
     try {
         const cart_id = req.cookies.cart_id;
@@ -8,30 +10,20 @@ const index = async (req, res) => {
             _id : cart_id
         })
         // CartDetail để show cho FrontEnd
-        const cartDetail = {
+        let cartDetail = {
             dishes : [],
         }
-        for (const item of cart.dishes) {
-            const dish = await Dish.findOne({ _id: item.dish_id });
-            const object = {
-                name : dish.name,
-                price : dish.price,
-                quantity : item.quantity,
-                category : dish.category,
-                imageUrl : dish.imageUrl,
-            }
-            cartDetail.dishes.push(object);
-        }
-        cartDetail.totalAmount = cart.totalAmount
+        await showCartDetail.showCartDetail(cart, cartDetail)
     
         res.status(200).json({
+            message : "Success!",
             cart : cartDetail
         })
     } catch (error) {
         res.json({
             code : 400,
             message : "Error!",
-            error : error
+            error : error.message
         })
     } 
 }
@@ -66,7 +58,6 @@ const addToCart = async (req, res) => {
                 dish_id : dishId,
                 quantity : quantity
             }
-        
             // Lưu vào database
             await Cart.updateOne(
                 {_id : cart_id}, 
@@ -79,35 +70,9 @@ const addToCart = async (req, res) => {
         const cartDetail = {
             dishes : [],
         }
-
-        // Tính tổng tiền
         const newCart = await Cart.findOne({_id : cart_id})
-        // console.log(newCart)
-        let total = 0;
-        for (const item of newCart.dishes) {
-            const dish = await Dish.findOne({ _id: item.dish_id });
-            const object = {
-                name : dish.name,
-                price : dish.price,
-                quantity : item.quantity,
-                category : dish.category,
-                imageUrl : dish.imageUrl,
-            }
-            cartDetail.dishes.push(object);
-            if (dish) {
-                total += parseInt(dish.price) * item.quantity;
-            }
-        }
-        // console.log(total);
-        newCart.totalAmount = total;
-        cartDetail.totalAmount = newCart.totalAmount
+        await showCartDetail.showCartDetail(newCart, cartDetail)
 
-        await Cart.updateOne(
-            {_id : cart_id},
-            {
-                totalAmount : newCart.totalAmount
-            }
-        )
 
         res.status(200).json({
             message : "Thêm sản phẩm vào giỏ hàng thành công!",
