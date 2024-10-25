@@ -4,13 +4,15 @@ const User = require("../models/user.model")
 
 
 module.exports.authUser = async (req, res, next) => {
-    if(!req.headers.authorization) {
+    if(!req.cookies.token) {
         return res.status(401).json({
-            message : "Người dùng chưa đăng nhập"
+            error: "Unauthorized",
+            message : "Người dùng chưa đăng nhập",
+
         })
     } else {
         try {
-            const token = req.headers.authorization.split(" ")[1];
+            const token = req.cookies.token;
             // console.log(token)
             const user = await User.findOne({
                 token: token,
