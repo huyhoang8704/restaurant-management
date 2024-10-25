@@ -64,9 +64,12 @@ const register = async (req, res) => {
             });
             const data = await user.save();
             const token = data.token
-            res.cookie("token" , token)
-
-
+            res.cookie("token", token, {
+                maxAge: 24 * 60 * 60 * 1000,
+                httpOnly: true,  // ngăn JavaScript truy cập cookie này
+                secure: true     // yêu cầu HTTPS
+            });
+            
             res.status(201).json({
                 message : "Đăng ký tài khoản thành công!",
                 data : data,
@@ -89,7 +92,6 @@ const login = async (req, res) => {
         email: email,
         deleted: false
     })
-    // console.log(user)
     if(!user) {
         res.status(400).json({
             message : "Email không tồn tại!"
@@ -104,7 +106,11 @@ const login = async (req, res) => {
         return;
     }
     const token = user.token;
-    res.cookie("token" , token);
+    res.cookie("token", token, {
+        maxAge: 24 * 60 * 60 * 1000,
+        httpOnly: true,  // ngăn JavaScript truy cập cookie này
+        secure: true     // yêu cầu HTTPS
+    });
 
     // Sau khi người dùng đăng nhập thành công tạo CartID cho khách hàng
     let cart = {};
@@ -113,18 +119,12 @@ const login = async (req, res) => {
     })
     // Kiểm tra xem khách hàng có giỏ hàng đó chưa
     if(!userCart) {
-        if(!req.cookies.cart_id) {
-            cart = new Cart({
-                customer_id : user._id,  // Lưu id của khách hàng vào cart
-                dishes : [],
-                totalAmount : 0,
-            });
-            await cart.save();
-        } else {
-            cart = await Cart.findOne({
-                _id : req.cookies.cart_id
-            });
-        }
+        cart = new Cart({
+            customer_id : user._id,  // Lưu id của khách hàng vào cart
+            dishes : [],
+            totalAmount : 0,
+        });
+        await cart.save();
     } else {
         cart = userCart
     }
@@ -166,6 +166,7 @@ const updateUser = async (req, res) => {
 const logout = async (req, res) => {
     try {
         res.clearCookie("token");
+        res.clearCookie("cart_id");
         res.status(200).json({
             message : "Đăng xuất thành công!",
         })
