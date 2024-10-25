@@ -7,4 +7,6 @@ router.get('/',controller.index)
 
 router.post('/add',controller.addToCart)
 
+router.post('/update/:dish_id',controller.updateCart)
+
 module.exports = router;

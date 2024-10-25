@@ -121,7 +121,37 @@ const addToCart = async (req, res) => {
     } 
 }
 
+const updateCart = async (req, res) => {
+    try {
+        const cart_id = req.cookies.cart_id;
+        const dish_id = req.params.dish_id;
+        const quantity = parseInt(req.body.quantity);
+
+        await Cart.updateOne(
+            {
+                _id : cart_id,
+                'dishes.dish_id' : dish_id,
+            },
+            {
+                'dishes.$.quantity': quantity
+            }
+        )
+        const dish = await Dish.findOne({ _id: dish_id });
+
+
+        res.status(200).json({
+            message : `Cập nhật số lượng cho ${dish.name} thành công! `,
+        })
+    } catch (error) {
+        res.status(400).json({
+            message : "Error!",
+            error : error.message
+        })
+    } 
+}
+
 module.exports = {
     index,
     addToCart,
+    updateCart,
 }
