@@ -16,7 +16,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cors())
-
+/**
+ * (Access-Control-Allow-Origin: *)
+ * GET, POST, PUT, DELETE, v.v.
+ * Content-Type, Authorization, v.v.
+*/
 // Cookie-parser middleware
 app.use(cookieParser());
 
