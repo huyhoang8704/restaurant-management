@@ -9,6 +9,10 @@ const CartSchema = new mongoose.Schema({
         }
     ],
     totalAmount: Number,
+    deleted: {  // dùng để xem lịch sử của khách hàng => Hóa đơn đã thanh toán delected = true
+        type: Boolean,
+        default: false,
+    },
 },
     {
         timestamps: true
