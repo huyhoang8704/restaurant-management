@@ -1,29 +1,18 @@
 const mongoose = require('mongoose');
 
 const OrderSchema = new mongoose.Schema({
-    customer_id: String,
-    deliveryAddress: {
-        type: String,
-        default : ""  // Có thể ăn tại nhà hàng nên optional
-    },
     cart_id : String,
+    customer_id : String,
+    orderType: {
+        type: String,
+        enum: ['Dine In', 'Delivery'],
+        required: true,
+    },
     dishes: [
         {
-            dish: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Dish',
-                required: [true, 'Dish is required']
-            },
-            quantity: {
-                type: Number,
-                required: [true, 'Quantity is required'],
-                min: [1, 'Quantity must be at least 1']
-            },
-            price :{
-                type: Number,
-                required: [true, 'Price is required'],
-                min: [0, 'Price must be a positive number']
-            }
+            dish_id : String,
+            quantity : Number,
+            price : Number,
         }
     ],
     totalAmount: {
@@ -31,16 +20,30 @@ const OrderSchema = new mongoose.Schema({
         required: [true, 'Total amount is required'],
         min: [0, 'Total amount must be a positive number']
     },
-    status: {
-        type: String,
-        enum: ['Pending', 'In Progress', 'Completed', 'Cancelled'],
-        default: 'Pending'
+    dineInDetails: {   // "Dine In"
+        tableId: String,
+        reservationTime: Date,
+    },
+    deliveryDetails: {
+        address: String,
+        deliveryTime: Date,
     },
 },
     {
         timestamps: true
     }
 );
+// Validate the order before saving
+OrderSchema.pre('save', function (next) {
+    if (this.orderType === 'Dine In' && !this.dineInDetails.tableId) {
+      return next(new Error('Dine In order must have table details.'));
+    }
+    if (this.orderType === 'Delivery' && !this.deliveryDetails.address) {
+      return next(new Error('Delivery order must have address details.'));
+    }
+    next();
+  });
+
 
 const Order = mongoose.model('Order', OrderSchema , "order");
 
