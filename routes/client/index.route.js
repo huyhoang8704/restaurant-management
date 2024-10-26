@@ -2,6 +2,7 @@ const userRoute = require('./user.route')
 const homeRoute = require('./home.route')
 const menuRoute = require('./menu.route')
 const cartRoute = require('./cart.route')
+const orderRoute = require('./order.route')
 
 const authUser = require('../../middlewares/authUser.middleware')
 
@@ -15,4 +16,6 @@ module.exports = (app) => {
     app.use("/menu",menuRoute);
 
     app.use("/cart",authUser.authUser,cartRoute);
+
+    app.use("/order",authUser.authUser,orderRoute);
 }
