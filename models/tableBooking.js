@@ -1,11 +1,7 @@
 const mongoose = require('mongoose');
 
 const TableBookingSchema = new mongoose.Schema({
-    customerId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User', // Tham chiếu đến khách hàng đặt bàn
-        required: true
-    },
+    customer_id: String,
     // tableNumber: {
     //     type: Number,
     //     required: [true, 'Table number is required']
@@ -32,6 +28,7 @@ const TableBookingSchema = new mongoose.Schema({
     timestamps: true
 });
 
-const TableBooking = mongoose.model('TableBooking', TableBookingSchema);
+const TableBooking = mongoose.model('TableBooking', TableBookingSchema, "table");
 
 module.exports = TableBooking;
+
