@@ -21,4 +21,5 @@ router.post('/request_Otp', Otpcontroller.requestOtp)
 
 router.post('/verify_Otp', Otpcontroller.VerifyOtpController)
 
+
 module.exports = router;
