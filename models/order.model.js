@@ -13,6 +13,7 @@ const OrderSchema = new mongoose.Schema({
             dish_id : String,
             quantity : Number,
             price : Number,
+            imageUrl : String,
         }
     ],
     totalAmount: {
@@ -27,6 +28,10 @@ const OrderSchema = new mongoose.Schema({
     deliveryDetails: {
         address: String,
         deliveryTime: Date,
+    },
+    deleted: {  // dùng để xem lịch sử của khách hàng => Hóa đơn đã thanh toán delected = true
+        type: Boolean,
+        default: false,
     },
 },
     {
