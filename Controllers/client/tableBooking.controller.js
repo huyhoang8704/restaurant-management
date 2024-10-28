@@ -4,7 +4,10 @@ const Table = require('../../models/table.model');
 
 const createBooking = async (req, res) => {
     try {
-        const availableTable = await Table.findOne({ status: 'available' });
+        const availableTable = await Table.findOne({
+            status: 'available',
+            numberofSeats: req.body.numberofSeats
+        });
         if (!availableTable) {
             return res.status(400).json({
                 message: "Không còn bàn nào có sẵn để đặt!",
