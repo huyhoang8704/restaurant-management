@@ -12,7 +12,7 @@ const index = async (req, res) => {
             deleted : false
         })
         let totalAmount = 0;  // Tính tiền thanh toán
-        if(!cart.dishes.length > 0) {
+        if(cart.dishes.length > 0) {
             for(const item of cart.dishes) {
                 const dish = await Dish.findOne({
                     _id : item.dish_id
