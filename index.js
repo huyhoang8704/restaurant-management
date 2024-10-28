@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const cors = require('cors')
+//const cors = require('cors')
 require('dotenv').config();
 const database = require('./config/mongoDB.database');
 
@@ -15,7 +15,7 @@ const port = process.env.PORT;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(cors())
+//app.use(cors())
 /**
  * (Access-Control-Allow-Origin: *)
  * GET, POST, PUT, DELETE, v.v.

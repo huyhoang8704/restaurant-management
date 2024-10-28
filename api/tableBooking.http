@@ -1,0 +1,14 @@
+### set a table
+POST http://localhost:3000/order/createtableBooking
+
+Content-Type: application/json
+{
+    "customer_id": "67158cf71f701deb148bbb93",    //cái này phải đăng nhập để lấy.
+    "bookingTime": "28/10/2024 22:00:00",
+    "numberofSeats": "4"
+}
+
+
+
+### get table booking list
+GET http://localhost:3000/admin/order/getalltableBookings
