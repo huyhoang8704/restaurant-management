@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require('cors')
+const morgan = require('morgan');
 require('dotenv').config();
 const database = require('./config/mongoDB.database');
 
@@ -23,7 +24,8 @@ app.use(cors())
 // */
 // Cookie-parser middleware
 app.use(cookieParser());
-
+// Morgan
+app.use(morgan(':method :url :status :response-time ms - :res[content-length]'));
 // Conect DB
 database.connect();
 

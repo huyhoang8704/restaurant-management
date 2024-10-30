@@ -1,6 +1,6 @@
 const Cart = require('../../models/cart.model')
 const Dish = require('../../models/dish.model')
-const TableBooking = require('../../models/tableBooking')
+const TableBooking = require('../../models/tableBooking.model')
 
 
 
