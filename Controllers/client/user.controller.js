@@ -31,7 +31,7 @@ const getUsers = async (req, res) => {
 }
 const getUser = async (req, res) => {
     try {
-        const id = req.params.id
+        const id = req.user.id
 
         const user = await User.findOne({
             _id : id,

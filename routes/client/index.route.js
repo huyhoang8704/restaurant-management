@@ -4,7 +4,7 @@ const menuRoute = require('./menu.route')
 const cartRoute = require('./cart.route')
 const orderRoute = require('./order.route')
 
-const authUser = require('../../middlewares/authUser.middleware')
+const authenticateToken = require('../../middlewares/authUser.middleware')
 
 module.exports = (app) => {
     // const PATHversion1 = "/api/v1"
@@ -15,7 +15,7 @@ module.exports = (app) => {
 
     app.use("/menu",menuRoute);
 
-    app.use("/cart",authUser.authUser,cartRoute);
+    app.use("/cart",authenticateToken,cartRoute);
 
-    app.use("/order",authUser.authUser,orderRoute);
+    app.use("/order",authenticateToken,orderRoute);
 }
