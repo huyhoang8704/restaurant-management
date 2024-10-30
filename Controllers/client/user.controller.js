@@ -93,6 +93,15 @@ const register = async (req, res) => {
             httpOnly: true,  
             secure: true     
         });
+        // Đăng ký thành công thì tạo cart cho user
+        const cart = new Cart({
+            user_id : newUser._id,
+            dishes : [],
+        })
+        await cart.save()
+        res.cookie("cart_id", cart.id , {
+            expires : new Date(Date.now() + 1000 * 60 * 60 * 24),
+        });
 
 
         res.status(201).json({
@@ -102,6 +111,7 @@ const register = async (req, res) => {
                 email: newUser.email,
                 role : newUser.role
             },
+            cart : cart,
             token
         });
 
