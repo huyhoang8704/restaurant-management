@@ -1,5 +1,12 @@
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const dotenv = require('dotenv')
+
 const User = require('../../models/user.model')
 const Cart = require('../../models/cart.model')
+
+
+dotenv.config();
 
 const generateHelper = require('../../helpers/generateHelper')
 
@@ -30,6 +37,9 @@ const getUser = async (req, res) => {
             _id : id,
             deleted : false
         }).select("fullname email phone address role token")
+        if (!user) {
+            return res.status(404).json({ message: 'Người dùng không tồn tại.' });
+        }
 
         res.status(200).json({
             message : "Thông tin user!",
@@ -45,37 +55,57 @@ const getUser = async (req, res) => {
 }
 const register = async (req, res) => {
     try {
+        const { fullname, email, phone, password, address} = req.body;
+
+
         const existEmail = await User.findOne({
             email : req.body.email,
             deleted : false
         })
         if(existEmail) {
-            res.status(400).json({
-                message : "Email đã tồn tại!",
-            })
-        } else {
-            const user = new User({
-                fullname : req.body.fullname,
-                email : req.body.email,
-                password : req.body.password,
-                phone : req.body.phone,
-                address : req.body.address,
-                token : generateHelper.generateRandomString(20)
-            });
-            const data = await user.save();
-            const token = data.token
-            res.cookie("token", token, {
-                maxAge: 24 * 60 * 60 * 1000,
-                httpOnly: true,  // ngăn JavaScript truy cập cookie này
-                secure: true     // yêu cầu HTTPS
-            });
-            
-            res.status(201).json({
-                message : "Đăng ký tài khoản thành công!",
-                data : data,
-                token : token
-            })
+            return res.status(400).json({ message: 'Email đã được sử dụng.' });
         }
+        // Hash password
+        const hashedPassword = await bcrypt.hash(password, 10);
+        // Create new user
+        const newUser = new User({
+            fullname,
+            email,
+            phone,
+            password : hashedPassword,
+            address
+        })
+        // Create JWT token
+        const token = jwt.sign(
+            { 
+                id: newUser.id,
+                fullname: newUser.fullname,
+            }, 
+            process.env.JWT_SECRET, 
+            { expiresIn: '1d' }
+        );
+        // Save MongoDB
+        newUser.token = token;
+        await newUser.save();
+        // Set cookie
+        res.cookie("token", token, {
+            maxAge: 24 * 60 * 60 * 1000,
+            httpOnly: true,  
+            secure: true     
+        });
+
+
+        res.status(201).json({
+            message: 'Đăng ký thành công!',
+            user: {
+                fullName: newUser.fullname,
+                email: newUser.email,
+                role : newUser.role
+            },
+            token
+        });
+
+
     } catch (error) {
         res.status(500).json({
             message : "Đăng ký thất bại!",
@@ -84,8 +114,8 @@ const register = async (req, res) => {
     } 
 }
 const login = async (req, res) => {
-    const email = req.body.email
-    const password = req.body.password
+    const {email, password} = req.body;
+
 
     // Check email
     const user = await User.findOne({
@@ -93,19 +123,22 @@ const login = async (req, res) => {
         deleted: false
     })
     if(!user) {
-        res.status(400).json({
-            message : "Email không tồn tại!"
-        })
-        return;
+        return res.status(400).json({ message: 'Email đăng nhập không chính xác.' });
     }
-    // Check password
-    if(user.password != password){
-        res.status(300).json({
-            message : "Bạn đã nhập sai mật khẩu !"
-        })
-        return;
+    // Check Password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+        return res.status(400).json({ message: 'Sai mật khẩu.' });
     }
-    const token = user.token;
+    // Create JWT token
+    const token = jwt.sign(
+        { 
+            id: user.id,
+            fullname: user.fullname,
+        }, 
+        process.env.JWT_SECRET, 
+        { expiresIn: '1d' }
+    );
     res.cookie("token", token, {
         maxAge: 24 * 60 * 60 * 1000,
         httpOnly: true,  // ngăn JavaScript truy cập cookie này
@@ -157,7 +190,7 @@ const updateUser = async (req, res) => {
             user : updatedUser
         })
     } catch (error) {
-        res.status(400).json({
+        res.status(500).json({
             message : "Error!",
             error : error.message
         })
