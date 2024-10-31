@@ -140,16 +140,8 @@ const login = async (req, res) => {
     if (!isPasswordValid) {
         return res.status(400).json({ message: 'Sai mật khẩu.' });
     }
-    // Create JWT token
-    const token = jwt.sign(
-        { 
-            id: user.id,
-            fullname: user.fullname,
-        }, 
-        process.env.JWT_SECRET, 
-        { expiresIn: '1d' }
-    );
-    res.cookie("token", token, {
+    
+    res.cookie("token", user.token, {
         maxAge: 24 * 60 * 60 * 1000,
         httpOnly: true,  // ngăn JavaScript truy cập cookie này
         secure: true     // yêu cầu HTTPS
@@ -179,7 +171,7 @@ const login = async (req, res) => {
     res.status(200).json({
         message : "Đăng nhập thành công!",
         user : user.fullname,
-        token : token,
+        token : user.token,
         cart : cart
     })
 

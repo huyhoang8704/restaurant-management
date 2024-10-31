@@ -11,7 +11,7 @@ router.get('/list', controller.getUsers)
 
 router.get('/detail' ,authenticateToken, controller.getUser)
 
-router.patch('/edit/:id' , controller.updateUser)
+router.patch('/edit/:id' ,authenticateToken ,controller.updateUser)
 
 router.post('/register' , controller.register)
 
@@ -19,9 +19,9 @@ router.post('/login' , controller.login)
 
 router.get('/logout', controller.logout)
 
-router.post('/request_Otp', Otpcontroller.requestOtp)
+router.post('/request_Otp',authenticateToken, Otpcontroller.requestOtp)
 
-router.post('/verify_Otp', Otpcontroller.VerifyOtpController)
+router.post('/verify_Otp',authenticateToken ,Otpcontroller.VerifyOtpController)
 
 
 module.exports = router;
