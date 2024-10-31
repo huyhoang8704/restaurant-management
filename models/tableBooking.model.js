@@ -6,13 +6,13 @@ const TableBookingSchema = new mongoose.Schema({
     //     type: Number,
     //     required: [true, 'Table number is required']
     // },
-    bookingDate: {  // ngày đặt bàn //CÁI NÀY CHẮC HỆ THỐNG TỰ LƯU
-        type: Date,
-        default: Date.now ()
+    bookingDate: {  
+        type: String,
+        required: [true, 'DD/MM/YYYY'] 
     },
     bookingTime: {  // mấy giờ
         type: String,
-        required: [true, 'DD/MM/YYYY HH:mm:ss'] 
+        required: [true, 'HH:mm:ss'] 
     },
     // numberOfGuests: {
     //     type: Number,

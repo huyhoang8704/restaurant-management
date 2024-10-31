@@ -15,7 +15,11 @@ const TableSchema = new mongoose.Schema({
         enum: ['available', 'unavailable'],
         default: 'available'
     }
-},)
+},
+{
+    timestamps: true
+}
+)
 
 const Table = mongoose.model("Table", TableSchema, "table");
 

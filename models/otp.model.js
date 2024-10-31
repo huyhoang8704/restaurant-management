@@ -18,6 +18,9 @@ const OtpSchema = new mongoose.Schema({
         type: Date,
         require: true
     }
+},
+{
+    timestamps: true
 })
 
 const Otp = mongoose.model('Otp', OtpSchema);
@@ -26,10 +29,10 @@ const storeOTP = async (email, otp) => {
     const time = Date.now();
     const expires = Date.now() + 5 * 60 * 1000;
     const OptEntry = new Otp({
-        email: email,
-        otp: otp,
-        time: time,
-        expires: expires
+       email,
+       otp,
+       time,
+       expires
     });
     try {
         await OptEntry.save();
@@ -40,7 +43,7 @@ const storeOTP = async (email, otp) => {
 
 const VerifyOtp = async (email, inputOtp) => {
     const OtpEntry = await Otp.findOne({
-        email: email,
+        email,
         otp: inputOtp
     }).exec();
 

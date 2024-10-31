@@ -53,7 +53,7 @@ POST http://localhost:3000/users/request_Otp
 Content-Type: application/json
 
 {
-      "email": "abc@gmail.com",
+      "email": "abc@gmail.com"
 }
 
 
