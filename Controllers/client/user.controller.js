@@ -140,8 +140,20 @@ const login = async (req, res) => {
     if (!isPasswordValid) {
         return res.status(400).json({ message: 'Sai mật khẩu.' });
     }
+    // Create JWT token
+    const token = jwt.sign(
+        { 
+            id: user.id,
+            fullname: user.fullname,
+        }, 
+        process.env.JWT_SECRET, 
+        { expiresIn: '1d' }
+    );
+    // Lưu lại token vào moongoDB
+    user.token = token;
+    await user.save();
     
-    res.cookie("token", user.token, {
+    res.cookie("token", token, {
         maxAge: 24 * 60 * 60 * 1000,
         httpOnly: true,  // ngăn JavaScript truy cập cookie này
         secure: true     // yêu cầu HTTPS

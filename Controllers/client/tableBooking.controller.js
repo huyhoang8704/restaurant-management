@@ -15,7 +15,7 @@ const createBooking = async (req, res) => {
         }
         //const booking_Time = moment(req.body.bookingTime, 'DD/MM/YYYY HH:mm:ss').toDate(); THỜI GIAN DỰ KIẾN?
         const booking = new TableBooking({
-            customer_id: req.body.customer_id,
+            customer_id: req.user._id,
             bookingDate: req.body.bookingDate,
             bookingTime: req.body.bookingTime,
             numberofSeats: req.body.numberofSeats,
@@ -23,14 +23,14 @@ const createBooking = async (req, res) => {
         });
         //ĐỔI STATUS CỦA BÀN VỪA ĐẶT ĐC SANG ĐÃ DÙNG
         await Table.findByIdAndUpdate(availableTable._id, { status: 'unavailable' });
-
+        // THỜI GIAN ĐẶT BÀN ĂN 2H
         setTimeout(async () => {
             await Table.findByIdAndUpdate(availableTable._id, { status: 'available' });
-        }, 60 * 60 * 1000); // ĐOẠN NÀY CÓ THỂ GÁN THỜI GIAN ĐỂ TỰ HẾT HẠN BÀN. (TÍNH BẰNG MILI GIÂY
+        }, 60 * 60 * 1000 * 2); 
 
         const data = await booking.save();
         res.status(201).json({
-            message: "Đặt bàn thành công",
+            message: `Chúc mừng ${req.user.fullname} đã đặt bàn thành công`,
             data,
         });
     } catch (error) {

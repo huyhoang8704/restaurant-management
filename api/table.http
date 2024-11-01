@@ -3,7 +3,6 @@ POST http://localhost:3000/admin/table/create
 
 Content-Type: application/json
 {
-    "TableQuantity" : 10,
     "numberofSeats": "4"
 }
 
