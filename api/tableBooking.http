@@ -12,4 +12,4 @@ Content-Type: application/json
 
 
 ### get table booking list
-GET http://localhost:3000/admin/order/getalltableBookings
+GET http://localhost:3000/admin/tableBooking/list
