@@ -3,7 +3,7 @@ const router = express.Router()
 const tableBookingcontroller = require('../../Controllers/admin/tableBooking.controller')
 
 
-router.get('/getalltableBookings', tableBookingcontroller.getallBookings)
+router.get('/list', tableBookingcontroller.getallBookings)
 
 
 module.exports = router;

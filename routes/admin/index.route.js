@@ -4,7 +4,7 @@ const systemConfig = require("../../config/system")
 const dashboard = require("./dashboard.route")
 const dish = require("./dish.route")
 const table = require("./table.route")
-const orderRoute = require("./order.router")
+const tableBooking = require("./tableBooking.router")
 
 
 
@@ -15,5 +15,5 @@ module.exports = (app) => {
     app.use(PATH + "/dashboard", dashboard);
     app.use(PATH + "/dish", dish);
     app.use(PATH + "/table", table);
-    app.use(PATH + "/order", orderRoute);
+    app.use(PATH + "/tableBooking", tableBooking);
 }
