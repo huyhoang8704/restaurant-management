@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 const OrderSchema = new mongoose.Schema({
     cart_id : String,
@@ -10,6 +11,7 @@ const OrderSchema = new mongoose.Schema({
     },
     dishes: [
         {
+            name : String,
             dish_id : String,
             quantity : Number,
             price : Number,
@@ -21,10 +23,8 @@ const OrderSchema = new mongoose.Schema({
         required: [true, 'Total amount is required'],
         min: [0, 'Total amount must be a positive number']
     },
-    dineInDetails: {   // "Dine In"
-        tableId: String,
-        reservationTime: Date,
-    },
+    // "Dine In"
+    dineInDetails: [{ type: Schema.Types.ObjectId, ref: 'TableBooking' }],
     deliveryDetails: {
         address: String,
         deliveryTime: Date,

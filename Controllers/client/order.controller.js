@@ -1,6 +1,7 @@
 const Cart = require('../../models/cart.model')
 const Dish = require('../../models/dish.model')
-const TableBooking = require('../../models/tableBooking.model')
+const Order = require('../../models/order.model')
+const TableBooking = require("../../models/tableBooking.model");
 
 
 
@@ -11,7 +12,9 @@ const index = async (req, res) => {
             _id : cart_id,
             deleted : false
         })
-        let totalAmount = 0;  // Tính tiền thanh toán
+        let objectOrder = new Order();
+        // Tính tổng số tiền
+        let totalAmount = 0; 
         if(cart.dishes.length > 0) {
             for(const item of cart.dishes) {
                 const dish = await Dish.findOne({
@@ -27,9 +30,11 @@ const index = async (req, res) => {
                 totalAmount += (dish.price * item.quantity)
             }
         }
+        objectOrder.totalAmount = totalAmount
+        //!
         if(req.body.orderType === "Dine In") {
-            const table = await TableBooking.findOne({
-                customer_id : cart.customer_id
+            const table = await TableBooking.find({
+                customer_id : req.user._id
             })
             if(!table) {
                 res.status(404).json({
@@ -37,7 +42,7 @@ const index = async (req, res) => {
                 })
                 return;
             }
-            objectOrder.table_id = table._id
+            objectOrder.dineInDetails = table
         }
         if (req.body.orderType === "Delivery") {
             let deliveryDetails = {
@@ -46,22 +51,23 @@ const index = async (req, res) => {
             }
             objectOrder.deliveryDetails = deliveryDetails
         }
-        //! QRPayment
+        // //! QRPayment
 
+        // const order = new Order(objectOrder)
+        // await order.save()
 
-        const objectOrder = {
-            cart_id : cart_id,
-            customer_id : cart.customer_id,
-            dishes : cart.dishes,
-            totalAmount : totalAmount,
-            orderType : req.body.orderType
-        }
-        const order = new Order(objectOrder)
-        await order.save()
+        //! nếu đặt hàng thành công thì cập nhật lại cart
+        await Cart.findOneAndUpdate({
+            _id : cart_id
+        }, {
+            $set : {
+                deleted : true
+            }
+        })
 
         res.status(200).json({
             message : "Success!",
-            order : order
+            data : objectOrder
         })
     } catch (error) {
         res.status(501).json({
