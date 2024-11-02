@@ -18,8 +18,20 @@ const index = async (req, res) => {
     } else {
         sort.like = "desc"
     }
+    // Pagination
+    let limit = 4; // Number of items in a page
+    let skip = 0;  // Default skip is 0
+    
+    if (req.query.page) {
+        let page = parseInt(req.query.page); // Current Page
+        skip = (page - 1) * limit;
+    }
 
-    const dishes = await Dish.find(find).sort(sort)
+    const dishes = await Dish
+        .find(find)
+        .sort(sort)
+        .limit(limit)
+        .skip(skip)
     res.status(200).json({
         message : "Success!",
         data : dishes
@@ -42,8 +54,20 @@ const getCategory = async (req, res) => {
     } else {
         sort.like = "desc"
     }
+    // Pagination
+    let limit = 4; // Number of items in a page
+    let skip = 0;  // Default skip is 0
     
-    const dishes = await Dish.find(find)
+    if (req.query.page) {
+        let page = parseInt(req.query.page); // Current Page
+        skip = (page - 1) * limit;
+    }
+    
+    const dishes = await Dish
+        .find(find)
+        .sort(sort)
+        .limit(limit)
+        .skip(skip)
     res.status(200).json({
         message : "Success!",
         data : dishes
