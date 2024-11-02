@@ -2,10 +2,14 @@ const Table  = require("../../models/table.model")
 
 const createTable = async (req, res) => {
     try {
-        const table = new Table({
-            numberofSeats : req.body.numberofSeats
-        })
-        const data = await table.save()
+        const tables = [];
+        const TableQuantity = req.body.TableQuantity;
+        for (let i = 0; i < TableQuantity; i++) {
+            tables.push({ 
+                numberofSeats: req.body.numberofSeats,
+            });
+        }
+        const data = await Table.insertMany(tables);
         res.status(201).json({
             message : "Thêm bàn thành công",
             data,
