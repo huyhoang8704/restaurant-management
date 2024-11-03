@@ -18,7 +18,10 @@ const port = process.env.PORT;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(cors({ origin: '*' }));  // Cho phép tất cả các nguồn
+app.use(cors({
+    origin: 'http://localhost:3001',  
+    credentials: true 
+}));
 // Cookie-parser middleware
 app.use(cookieParser());
 // Morgan
