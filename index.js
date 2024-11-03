@@ -19,8 +19,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cors({
-    origin: 'http://localhost:3001',  
-    credentials: true 
+    origin: ['http://localhost:3001' ,'https://da-cnpm-be.vercel.app' ],  
+    credentials: true // Allow credentials (cookies, authorization headers, etc.)
 }));
 // Cookie-parser middleware
 app.use(cookieParser());
