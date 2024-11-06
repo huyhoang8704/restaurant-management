@@ -33,7 +33,7 @@ database.connect();
 const swaggerUi = require('swagger-ui-express');
 const yamljs = require('yamljs');
 // Load Swagger file (yaml)
-const swaggerDocument = yamljs.load(path.resolve(__dirname, './swagger.yaml'));
+const swaggerDocument = yamljs.load(path.resolve(__dirname, 'swagger.yaml'));
 
 // Sử dụng Swagger UI để hiển thị tài liệu API
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
