@@ -19,9 +19,9 @@ router.post('/login' , controller.login)
 
 router.get('/logout',authenticateToken, controller.logout)
 
-router.post('/request_Otp',authenticateToken, Otpcontroller.requestOtp)
+router.post('/requestOtp',authenticateToken, Otpcontroller.requestOtp)
 
-router.post('/verify_Otp',authenticateToken ,Otpcontroller.VerifyOtpController)
+router.post('/verifyOtp',authenticateToken ,Otpcontroller.VerifyOtpController)
 
 
 module.exports = router;

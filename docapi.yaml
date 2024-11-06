@@ -343,3 +343,104 @@ paths:
                   error:
                     type: string
                     example: "Chi tiết lỗi"
+
+  /users/requestOtp:
+    post:
+      summary: Yêu cầu mã OTP
+      tags:
+        - Users
+      security:
+        - bearerAuth: []   # Sử dụng token JWT để xác thực
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "example@gmail.com"
+                  description: "Email của người dùng yêu cầu OTP"
+      responses:
+        '200':
+          description: Mã OTP đã được gửi thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "OTP has been sent"
+        '400':
+          description: Lỗi khi yêu cầu OTP, ví dụ email không tồn tại hoặc lỗi gửi OTP
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Email does not exist! or Error sending OTP"
+                  error:
+                    type: string
+                    example: "Chi tiết lỗi"
+
+  /users/verify_Otp:
+    post:
+      summary: Xác minh OTP và thay đổi mật khẩu
+      tags:
+        - Users
+      security:
+        - bearerAuth: []   # Sử dụng token JWT để xác thực
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "example@gmail.com"
+                  description: "Email của người dùng yêu cầu thay đổi mật khẩu"
+                otp:
+                  type: string
+                  example: "123456"
+                  description: "Mã OTP được gửi đến email"
+                newPassword:
+                  type: string
+                  example: "newPassword123"
+                  description: "Mật khẩu mới người dùng muốn thay đổi"
+      responses:
+        '200':
+          description: OTP hợp lệ và mật khẩu đã được thay đổi thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Otp is valid and password has been changed"
+        '400':
+          description: Lỗi xác minh OTP hoặc thông tin không hợp lệ
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User does not exist or Invalid OTP"
+        '500':
+          description: Lỗi khi xử lý yêu cầu
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Error when determining OTP"
