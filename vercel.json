@@ -11,6 +11,10 @@
         {
             "src": "/(.*)",
             "dest": "index.js"
+        },
+        {
+          "src": "/api-docs",
+          "dest": "swagger.yaml"
         }
     ]
   }
