@@ -11,7 +11,7 @@ router.get('/list', controller.getUsers)
 
 router.get('/detail' ,authenticateToken, controller.getUser)
 
-router.patch('/edit/:id' ,authenticateToken ,controller.updateUser)
+router.patch('/edit' ,authenticateToken ,controller.updateUser)
 
 router.post('/register' , controller.register)
 
