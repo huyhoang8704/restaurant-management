@@ -28,6 +28,15 @@ app.use(cookieParser());
 app.use(morgan(':method :url :status :response-time ms - :res[content-length]'));
 // Conect DB
 database.connect();
+// Import Document API Swagger
+const swaggerUi = require('swagger-ui-express');
+const yamljs = require('yamljs');
+// Load Swagger file (yaml)
+const swaggerDocument = yamljs.load('./swagger.yaml');
+// Sử dụng Swagger UI để hiển thị tài liệu API
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+
 
 // Import routes 
 clientRoute(app);
