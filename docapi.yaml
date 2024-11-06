@@ -1,0 +1,345 @@
+# swagger.yaml
+openapi: 3.0.0
+info:
+  title: API Documentation
+  version: 1.0.0
+  description: API documentation for my project
+
+servers:
+  - url: http://localhost:3000
+    description: Development server
+
+paths:
+  /users/register:
+    post:
+      summary: Đăng ký tài khoản
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullname:
+                  type: string
+                  example: "Nguyen Van A"
+                  description: "Tên đầy đủ của người dùng"
+                email:
+                  type: string
+                  example: "example@gmail.com"
+                  description: "Email của người dùng"
+                phone:
+                  type: string
+                  example: "0123456789"
+                  description: "Số điện thoại của người dùng"
+                password:
+                  type: string
+                  example: "password123"
+                  description: "Mật khẩu của người dùng"
+                address:
+                  type: string
+                  example: "123 Đường ABC, TP.HCM"
+                  description: "Địa chỉ của người dùng"
+      responses:
+        '201':
+          description: Đăng ký thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Đăng ký thành công!"
+                  user:
+                    type: object
+                    properties:
+                      fullName:
+                        type: string
+                        example: "Nguyen Van A"
+                      email:
+                        type: string
+                        example: "example@gmail.com"
+                      role:
+                        type: string
+                        example: "user"
+                  cart:
+                    type: object
+                    properties:
+                      user_id:
+                        type: string
+                        example: "60c72b2f4f1a4c3d88a1eae2"
+                      dishes:
+                        type: array
+                        items:
+                          type: object
+                        description: "Giỏ hàng của người dùng"
+                  token:
+                    type: string
+                    example: "jwt-token-example"
+        '400':
+          description: Email đã được sử dụng
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Email đã được sử dụng."
+        '500':
+          description: Đăng ký thất bại
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Đăng ký thất bại!"
+                  error:
+                    type: string
+                    example: "Error details"
+  /users/login:
+    post:
+      summary: Đăng nhập
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "example@gmail.com"
+                  description: "Email đăng nhập của người dùng"
+                password:
+                  type: string
+                  example: "password123"
+                  description: "Mật khẩu của người dùng"
+      responses:
+        '200':
+          description: Đăng nhập thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Đăng nhập thành công!"
+                  user:
+                    type: string
+                    example: "Nguyen Van A"
+                  token:
+                    type: string
+                    example: "jwt-token-example"
+                  cart:
+                    type: object
+                    properties:
+                      customer_id:
+                        type: string
+                        example: "60c72b2f4f1a4c3d88a1eae2"
+                      dishes:
+                        type: array
+                        items:
+                          type: object
+                        description: "Thông tin các món ăn trong giỏ hàng"
+        '400':
+          description: Lỗi xác thực
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Email hoặc mật khẩu đăng nhập không chính xác "
+        '500':
+          description: Lỗi server
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Có lỗi xảy ra"
+                  error:
+                    type: string
+                    example: "Chi tiết lỗi"
+  /users/detail:
+    get:
+      summary: Lấy thông tin chi tiết người dùng
+      tags:
+        - Users
+      security:
+        - bearerAuth: []   # Sử dụng token JWT để xác thực
+      responses:
+        '200':
+          description: Lấy thông tin người dùng thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Thông tin user!"
+                  user:
+                    type: object
+                    properties:
+                      fullname:
+                        type: string
+                        example: "Nguyen Van A"
+                      email:
+                        type: string
+                        example: "example@gmail.com"
+                      phone:
+                        type: string
+                        example: "0123456789"
+                      address:
+                        type: string
+                        example: "123 Đường ABC, TP.HCM"
+                      role:
+                        type: string
+                        example: "user"
+                      token:
+                        type: string
+                        example: "jwt-token-example"
+        '404':
+          description: Người dùng không tồn tại
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Người dùng không tồn tại."
+        '400':
+          description: Có lỗi xảy ra khi lấy thông tin người dùng
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Error!"
+                  error:
+                    type: string
+                    example: "Chi tiết lỗi"
+
+  /users/logout:
+    get:
+      summary: Đăng xuất
+      tags:
+        - Users
+      security:
+        - bearerAuth: []   # Sử dụng token JWT để xác thực
+      responses:
+        '200':
+          description: Đăng xuất thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Đăng xuất thành công!"
+        '400':
+          description: Có lỗi xảy ra khi đăng xuất
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Error!"
+                  error:
+                    type: string
+                    example: "Chi tiết lỗi"
+
+  /users/edit:
+    patch:
+      summary: Cập nhật thông tin mới người dùng
+      tags:
+        - Users
+      security:
+        - bearerAuth: []   # Sử dụng token JWT để xác thực
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullname:
+                  type: string
+                  example: "Nguyen Van B"
+                  description: "Tên đầy đủ mới của người dùng"
+                phone:
+                  type: string
+                  example: "0987654321"
+                  description: "Số điện thoại mới của người dùng"
+                address:
+                  type: string
+                  example: "456 Đường XYZ, TP.HCM"
+                  description: "Địa chỉ mới của người dùng"
+                # Có thể thêm các trường khác nếu cần cập nhật
+      responses:
+        '200':
+          description: Cập nhật thông tin thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Cập nhật thông tin thành công!"
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "60c72b2f4f1a4c3d88a1eae2"
+                      fullname:
+                        type: string
+                        example: "Nguyen Van B"
+                      email:
+                        type: string
+                        example: "newemail@gmail.com"
+                      phone:
+                        type: string
+                        example: "0987654321"
+                      address:
+                        type: string
+                        example: "456 Đường XYZ, TP.HCM"
+                      role:
+                        type: string
+                        example: "user"
+                      token:
+                        type: string
+                        example: "jwt-token-example"
+        '500':
+          description: Có lỗi xảy ra khi cập nhật thông tin
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Error!"
+                  error:
+                    type: string
+                    example: "Chi tiết lỗi"

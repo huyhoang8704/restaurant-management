@@ -17,7 +17,7 @@ router.post('/register' , controller.register)
 
 router.post('/login' , controller.login)
 
-router.get('/logout', controller.logout)
+router.get('/logout',authenticateToken, controller.logout)
 
 router.post('/request_Otp',authenticateToken, Otpcontroller.requestOtp)
 

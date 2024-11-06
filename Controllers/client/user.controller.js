@@ -190,7 +190,7 @@ const login = async (req, res) => {
 }
 const updateUser = async (req, res) => {
     try {
-        const id = req.params.id
+        const id = req.user.id
         const updateIn4 = req.body
 
         const data = await User.updateOne({
