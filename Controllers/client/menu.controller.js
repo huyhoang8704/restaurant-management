@@ -19,7 +19,7 @@ const index = async (req, res) => {
         sort.like = "desc"
     }
     // Pagination
-    let limit = 4; // Number of items in a page
+    let limit = 15; // Number of items in a page
     let skip = 0;  // Default skip is 0
     
     if (req.query.page) {
@@ -55,7 +55,7 @@ const getCategory = async (req, res) => {
         sort.like = "desc"
     }
     // Pagination
-    let limit = 4; // Number of items in a page
+    let limit = 15; // Number of items in a page
     let skip = 0;  // Default skip is 0
     
     if (req.query.page) {
