@@ -178,8 +178,6 @@ paths:
       summary: Lấy thông tin chi tiết người dùng
       tags:
         - Users
-      security:
-        - bearerAuth: []   # Sử dụng token JWT để xác thực
       responses:
         '200':
           description: Lấy thông tin người dùng thành công
@@ -241,8 +239,6 @@ paths:
       summary: Đăng xuất
       tags:
         - Users
-      security:
-        - bearerAuth: []   # Sử dụng token JWT để xác thực
       responses:
         '200':
           description: Đăng xuất thành công
@@ -273,8 +269,6 @@ paths:
       summary: Cập nhật thông tin mới người dùng
       tags:
         - Users
-      security:
-        - bearerAuth: []   # Sử dụng token JWT để xác thực
       requestBody:
         required: true
         content:
@@ -349,8 +343,6 @@ paths:
       summary: Yêu cầu mã OTP
       tags:
         - Users
-      security:
-        - bearerAuth: []   # Sử dụng token JWT để xác thực
       requestBody:
         required: true
         content:
@@ -392,8 +384,6 @@ paths:
       summary: Xác minh OTP và thay đổi mật khẩu
       tags:
         - Users
-      security:
-        - bearerAuth: []   # Sử dụng token JWT để xác thực
       requestBody:
         required: true
         content:
@@ -729,8 +719,6 @@ paths:
       summary: Đặt bàn cho khách hàng
       tags:
         - TableBooking
-      security:
-        - BearerAuth: []
       requestBody:
         description: Thông tin đặt bàn
         required: true
@@ -809,8 +797,6 @@ paths:
       summary: Lấy chi tiết giỏ hàng của người dùng
       tags:
         - Cart
-      security:
-        - BearerAuth: []
       responses:
         '200':
           description: Thành công lấy thông tin chi tiết giỏ hàng
@@ -866,8 +852,6 @@ paths:
       summary: Thêm món ăn vào giỏ hàng
       tags:
         - Cart
-      security:
-        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -938,8 +922,6 @@ paths:
       summary: Cập nhật số lượng món ăn trong giỏ hàng
       tags:
         - Cart
-      security:
-        - BearerAuth: []
       parameters:
         - name: dish_id
           in: path
@@ -983,3 +965,608 @@ paths:
                   error:
                     type: string
                     example: "Có lỗi khi cập nhật số lượng món ăn"
+
+  /admin/dish/create:
+    post:
+      summary: Tạo món ăn mới
+      description: Cho phép admin tạo một món ăn mới trong hệ thống.
+      tags:
+        - Dish
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Gà rán"
+                  description: "Tên của món ăn"
+                description:
+                  type: string
+                  example: "Món gà rán giòn tan với hương vị đặc biệt"
+                  description: "Mô tả món ăn"
+                price:
+                  type: number
+                  example: 50000
+                  description: "Giá món ăn"
+                category:
+                  type: string
+                  example: "Main Course"
+                  description: "Loại món ăn"
+                  enum: ["Appetizer", "Main Course", "Dessert", "Drink"]
+                imageUrl:
+                  type: string
+                  example: "https://link-to-image.com/image.jpg"
+                  description: "URL hình ảnh của món ăn"
+      responses:
+        201:
+          description: Món ăn được thêm thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Món ăn được thêm thành công!"
+                  data:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "Gà rán"
+                      description:
+                        type: string
+                        example: "Món gà rán giòn tan với hương vị đặc biệt"
+                      price:
+                        type: number
+                        example: 50000
+                      category:
+                        type: string
+                        example: "Main Course"
+                      imageUrl:
+                        type: string
+                        example: "https://link-to-image.com/image.jpg"
+        400:
+          description: Món ăn đã tồn tại
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Món ăn đã tồn tại"
+        500:
+          description: Thêm món ăn thất bại
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Thêm món ăn thất bại!"
+                  error:
+                    type: string
+                    example: "Mô tả lỗi"
+
+  /admin/dish/edit/{slugDish}:
+    patch:
+      summary: Cập nhật thông tin món ăn
+      description: Cho phép admin cập nhật thông tin của một món ăn dựa trên `slugDish`.
+      tags:
+        - Dish
+      parameters:
+        - name: slugDish
+          in: path
+          required: true
+          description: "Slug của món ăn cần cập nhật"
+          schema:
+            type: string
+            example: "ga-ran"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                  example: "Món gà rán giòn tan với vị mới"
+                  description: "Mô tả mới của món ăn"
+                price:
+                  type: number
+                  example: 10
+                  description: "Giá mới của món ăn"
+                category:
+                  type: string
+                  example: "Main Course"
+                  description: "Loại món ăn mới"
+                  enum: ["Appetizer", "Main Course", "Dessert", "Drink"]
+                imageUrl:
+                  type: string
+                  example: "https://link-to-updated-image.com/image.jpg"
+                  description: "URL hình ảnh mới của món ăn"
+      responses:
+        200:
+          description: Cập nhật món ăn thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Cập nhật món ăn thành công!"
+                  dish:
+                    type: object
+                    properties:
+                      description:
+                        type: string
+                        example: "Món gà rán giòn tan với vị mới"
+                      price:
+                        type: number
+                        example: 55000
+                      category:
+                        type: string
+                        example: "Main Course"
+                      imageUrl:
+                        type: string
+                        example: "https://link-to-updated-image.com/image.jpg"
+        404:
+          description: Món ăn không tồn tại
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Món ăn không tồn tại!"
+        501:
+          description: Lỗi trong quá trình cập nhật
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Error!"
+                  error:
+                    type: string
+                    example: "Mô tả lỗi"
+
+  /admin/dish/list:
+    get:
+      summary: Lấy danh sách các món ăn
+      description: Trả về danh sách tất cả các món ăn chưa bị xóa trong hệ thống.
+      tags:
+        - Dish
+      responses:
+        200:
+          description: Thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Success!"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          example: "Gà rán"
+                          description: "Tên món ăn"
+                        slug:
+                          type: string
+                          example: "ga-ran"
+                          description: "Slug của món ăn"
+                        description:
+                          type: string
+                          example: "Món gà rán giòn tan"
+                          description: "Mô tả món ăn"
+                        price:
+                          type: number
+                          example: 50000
+                          description: "Giá của món ăn"
+                        category:
+                          type: string
+                          example: "Main Course"
+                          description: "Loại món ăn"
+                          enum: ["Appetizer", "Main Course", "Dessert", "Drink"]
+                        imageUrl:
+                          type: string
+                          example: "https://link-to-image.com/image.jpg"
+                          description: "URL hình ảnh món ăn"
+                        like:
+                          type: integer
+                          example: 12
+                          description: "Số lượng lượt thích"
+                        deleted:
+                          type: boolean
+                          example: false
+                          description: "Trạng thái đã xóa hay chưa"
+        400:
+          description: Lỗi trong quá trình lấy danh sách món ăn
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "Error!"
+                  error:
+                    type: string
+                    example: "Mô tả lỗi"
+  /admin/dish/detail/{slugDish}:
+    get:
+      summary: Lấy chi tiết món ăn theo slug
+      description: Trả về chi tiết món ăn dựa trên slug của món ăn, bao gồm tên, mô tả, số lượt thích, giá, hình ảnh và loại món ăn.
+      tags:
+        - Dish
+      parameters:
+        - name: slugDish
+          in: path
+          description: Slug của món ăn
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Thành công, trả về chi tiết món ăn
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Success!"
+                  data:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "Gà rán"
+                        description: "Tên món ăn"
+                      slug:
+                        type: string
+                        example: "ga-ran"
+                        description: "Slug của món ăn"
+                      description:
+                        type: string
+                        example: "Món gà rán giòn tan"
+                        description: "Mô tả món ăn"
+                      price:
+                        type: number
+                        example: 50000
+                        description: "Giá của món ăn"
+                      category:
+                        type: string
+                        example: "Main Course"
+                        description: "Loại món ăn"
+                        enum: ["Appetizer", "Main Course", "Dessert", "Drink"]
+                      imageUrl:
+                        type: string
+                        example: "https://link-to-image.com/image.jpg"
+                        description: "URL hình ảnh món ăn"
+                      like:
+                        type: integer
+                        example: 12
+                        description: "Số lượng lượt thích"
+        400:
+          description: Lỗi khi không tìm thấy món ăn
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Error!"
+                  error:
+                    type: string
+                    example: "Không tìm thấy món ăn với slug này."
+
+  /admin/dish/delete/{slugDish}:
+    delete:
+      summary: Xóa món ăn theo slug
+      description: Đánh dấu món ăn là đã xóa bằng cách thiết lập trường `deleted` thành `true` trong cơ sở dữ liệu.
+      tags:
+        - Dish
+      parameters:
+        - name: slugDish
+          in: path
+          description: Slug của món ăn cần xóa
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Thành công, trả về món ăn đã bị xóa
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Xóa món ăn thành công!"
+                  dish:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "Gà rán"
+                        description: "Tên món ăn"
+                      slug:
+                        type: string
+                        example: "ga-ran"
+                        description: "Slug của món ăn"
+                      description:
+                        type: string
+                        example: "Món gà rán giòn tan"
+                        description: "Mô tả món ăn"
+                      price:
+                        type: number
+                        example: 50000
+                        description: "Giá của món ăn"
+                      category:
+                        type: string
+                        example: "Main Course"
+                        description: "Loại món ăn"
+                        enum: ["Appetizer", "Main Course", "Dessert", "Drink"]
+                      imageUrl:
+                        type: string
+                        example: "https://link-to-image.com/image.jpg"
+                        description: "URL hình ảnh món ăn"
+                      like:
+                        type: integer
+                        example: 12
+                        description: "Số lượng lượt thích"
+                      deleted:
+                        type: boolean
+                        example: true
+                        description: "Trạng thái món ăn (đã bị xóa)"
+        400:
+          description: Lỗi khi không tìm thấy món ăn hoặc không thể xóa
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Error!"
+                  error:
+                    type: string
+                    example: "Không tìm thấy món ăn để xóa."
+
+
+# ============================================= SCHEMA =================================================================
+
+
+
+
+components:
+  schemas:
+    Dish:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: "Unique identifier for the dish"
+          example: "6479b1e9a0f1b2d8f8c8d1b3"
+        name:
+          type: string
+          description: "The name of the dish"
+          example: "Spaghetti Carbonara"
+        slug:
+          type: string
+          description: "URL-friendly slug generated from the dish name"
+          example: "spaghetti-carbonara"
+        description:
+          type: string
+          description: "Detailed description of the dish"
+          example: "Classic Italian pasta with creamy sauce and pancetta"
+        price:
+          type: number
+          description: "Price of the dish"
+          minimum: 0
+          example: 12.5
+        slugCategory:
+          type: string
+          description: "URL-friendly slug generated from the category"
+          example: "main-course"
+        category:
+          type: string
+          description: "Category of the dish"
+          enum:
+            - "Appetizer"
+            - "Main Course"
+            - "Dessert"
+            - "Drink"
+          example: "Main Course"
+        imageUrl:
+          type: string
+          description: "URL to the image of the dish"
+          example: "https://example.com/images/spaghetti-carbonara.jpg"
+        like:
+          type: integer
+          description: "Number of likes for the dish"
+          example: 25
+      required:
+        - name
+        - price
+        - category
+
+    # Schema for Cart 
+    Cart:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: "Unique identifier for the cart"
+          example: "6483e9f1d2b9c6f3a5d8b4a9"
+        customer_id:
+          type: string
+          description: "Identifier of the customer who owns the cart"
+          example: "6479b1e9a0f1b2d8f8c8d1b3"
+        dishes:
+          type: array
+          description: "List of dishes added to the cart"
+          items:
+            type: object
+            properties:
+              dish_id:
+                type: string
+                description: "Unique identifier of the dish"
+                example: "6479b1e9a0f1b2d8f8c8d1b4"
+              quantity:
+                type: integer
+                description: "Quantity of the dish added to the cart"
+                example: 2
+        totalAmount:
+          type: number
+          description: "Total amount of the cart"
+          example: 35.5
+      required:
+        - customer_id
+        - dishes
+
+# Schema for Otp
+    Otp:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: "Unique identifier for the OTP entry"
+          example: "6483e9f1d2b9c6f3a5d8b4a9"
+        email:
+          type: string
+          format: email
+          description: "Email address associated with the OTP"
+          example: "user@example.com"
+        otp:
+          type: string
+          description: "One-time password code"
+          example: "123456"
+        time:
+          type: string
+          format: date-time
+          description: "Timestamp of OTP creation"
+          example: "2023-10-25T14:48:00.000Z"
+        expires:
+          type: string
+          format: date-time
+          description: "Expiration time of the OTP"
+          example: "2023-10-25T14:53:00.000Z"
+      required:
+        - email
+        - otp
+        - time
+        - expires
+
+# Schema for TableBooking
+    TableBooking:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: "Unique identifier for the booking"
+          example: "6483e9f1d2b9c6f3a5d8b4a9"
+        customer_id:
+          type: string
+          description: "Customer's ID associated with the booking"
+          example: "6483e9f1d2b9c6f3a5d8b4b0"
+        bookingDate:
+          type: string
+          description: "Booking date in DD/MM/YYYY format"
+          example: "07/11/2024"
+        bookingTime:
+          type: string
+          description: "Booking time in HH:mm:ss format"
+          example: "18:30:00"
+        numberofSeats:
+          type: integer
+          enum: [2, 4, 6, 8, 10]
+          description: "Number of seats reserved"
+          example: 4
+        tableId:
+          type: string
+          description: "ID of the table reserved"
+          example: "6483e9f1d2b9c6f3a5d8b4b1"
+      required:
+        - customer_id
+        - bookingDate
+        - bookingTime
+        - numberofSeats
+
+# Schema for User
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: "Unique identifier for the user"
+          example: "6483e9f1d2b9c6f3a5d8b4a2"
+        fullname:
+          type: string
+          description: "Full name of the user"
+          example: "John Doe"
+          minLength: 3
+          maxLength: 50
+        email:
+          type: string
+          description: "User's email address"
+          format: email
+          example: "johndoe@example.com"
+        password:
+          type: string
+          description: "User's password"
+          minLength: 6
+          example: "password123"
+        phone:
+          type: string
+          description: "User's phone number"
+          example: "1234567890"
+          pattern: "^\\d{10,15}$"
+        address:
+          type: string
+          description: "User's address"
+          example: "123 Main St, City, Country"
+        role:
+          type: string
+          description: "Role of the user"
+          enum: ["user", "staff", "admin", "delivery"]
+          default: "user"
+          example: "user"
+        token:
+          type: string
+          description: "Authentication token for the user"
+          example: "abcdef12345"
+      required:
+        - fullname
+        - email
+        - password
+        - phone
+
+
+

@@ -62,11 +62,9 @@ const createDish = async (req, res) => {
                 price: req.body.price,
                 category: req.body.category,
                 imageUrl: req.body.imageUrl,
-                like: req.body.like,
             });
             const data = await dish.save();
             const name = data.name
-            // res.cookie("name", name) //!
 
 
             res.status(201).json({
