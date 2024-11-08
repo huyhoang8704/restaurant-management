@@ -1360,6 +1360,184 @@ paths:
                     example: "Không tìm thấy món ăn để xóa."
 
 
+
+  /admin/accounts:
+    get:
+      summary: Get all accounts
+      tags:
+        - Quản lý Accounts bên Admin (admin,staff,delivery)
+      responses:
+        200:
+          description: Successful response with account list.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  accounts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        500:
+          description: Error fetching accounts.
+  
+  /admin/accounts/create:
+    post:
+      summary: Create a new account
+      tags:
+        - Quản lý Accounts bên Admin (admin,staff,delivery)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullname:
+                  type: string
+                  example: "John Doe"
+                email:
+                  type: string
+                  example: "johndoe@example.com"
+                password:
+                  type: string
+                  example: "password123"
+                phone:
+                  type: string
+                  example: "1234567890"
+                address:
+                  type: string
+                  example: "123 Main St"
+                role:
+                  type: string
+                  enum: ["user", "staff", "admin", "delivery"]
+                  example: "admin"
+      responses:
+        201:
+          description: Account created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  account:
+                    $ref: '#/components/schemas/User'
+                  token:
+                    type: string
+        400:
+          description: Email already used.
+        500:
+          description: Error creating account.
+  
+  /admin/accounts/{role}:
+    get:
+      summary: Get accounts by role
+      tags:
+        - Quản lý Accounts bên Admin (admin,staff,delivery)
+      parameters:
+        - name: role
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: ["user", "staff", "admin", "delivery"]
+      responses:
+        200:
+          description: Successful response with account list.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  accounts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        500:
+          description: Error fetching accounts by role.
+  
+  /admin/accounts/login:
+    post:
+      summary: Login to an account
+      tags:
+        - Quản lý Accounts bên Admin (admin,staff,delivery)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "johndoe@example.com"
+                password:
+                  type: string
+                  example: "password123"
+      responses:
+        200:
+          description: Successful login response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  user:
+                    type: string
+                  role:
+                    type: string
+                  token:
+                    type: string
+        400:
+          description: Invalid email or password.
+  
+  /admin/accounts/edit:
+    patch:
+      summary: Edit account information
+      tags:
+        - Quản lý Accounts bên Admin (admin,staff,delivery)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullname:
+                  type: string
+                  example: "Jane Doe"
+                phone:
+                  type: string
+                  example: "0987654321"
+                address:
+                  type: string
+                  example: "456 Another St"
+      responses:
+        200:
+          description: Account updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/User'
+        500:
+          description: Error updating account.
+
+
+
+
 # ============================================= SCHEMA =================================================================
 
 
@@ -1567,6 +1745,4 @@ components:
         - email
         - password
         - phone
-
-
 
