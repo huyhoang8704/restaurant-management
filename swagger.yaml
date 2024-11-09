@@ -968,40 +968,39 @@ paths:
 
   /admin/dish/create:
     post:
-      summary: Tạo món ăn mới
-      description: Cho phép admin tạo một món ăn mới trong hệ thống.
+      summary: Thêm món ăn mới
+      description: Thêm một món ăn mới vào hệ thống quản lý nhà hàng.
       tags:
         - Dish
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
               type: object
               properties:
                 name:
                   type: string
-                  example: "Gà rán"
-                  description: "Tên của món ăn"
+                  example: "Cocacola"
+                  description: Tên của món ăn
                 description:
                   type: string
-                  example: "Món gà rán giòn tan với hương vị đặc biệt"
-                  description: "Mô tả món ăn"
+                  example: "Nước ngọt"
+                  description: Mô tả của món ăn
                 price:
                   type: number
-                  example: 50000
-                  description: "Giá món ăn"
+                  example: 3
+                  description: Giá của món ăn
                 category:
                   type: string
-                  example: "Main Course"
-                  description: "Loại món ăn"
-                  enum: ["Appetizer", "Main Course", "Dessert", "Drink"]
-                imageUrl:
+                  example: "Drink"
+                  description: Danh mục của món ăn
+                file:
                   type: string
-                  example: "https://link-to-image.com/image.jpg"
-                  description: "URL hình ảnh của món ăn"
+                  format: binary
+                  description: File ảnh của món ăn
       responses:
-        201:
+        '201':
           description: Món ăn được thêm thành công
           content:
             application/json:
@@ -1010,27 +1009,36 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Món ăn được thêm thành công!"
+                    example: "Sản phẩm Cocacola được thêm thành công"
                   data:
                     type: object
                     properties:
                       name:
                         type: string
-                        example: "Gà rán"
+                        example: "Cocacola"
                       description:
                         type: string
-                        example: "Món gà rán giòn tan với hương vị đặc biệt"
+                        example: "Nước ngọt"
                       price:
                         type: number
-                        example: 50000
+                        example: 3
                       category:
                         type: string
-                        example: "Main Course"
+                        example: "Drink"
                       imageUrl:
                         type: string
-                        example: "https://link-to-image.com/image.jpg"
-        400:
-          description: Món ăn đã tồn tại
+                        example: "https://res.cloudinary.com/yourcloud/image/upload/v1731144323/vmk2t4iz1pdqqrh55mf9.jpg"
+                      like:
+                        type: number
+                        example: 0
+                      deleted:
+                        type: boolean
+                        example: false
+                      _id:
+                        type: string
+                        example: "672f2a84599a4f9a3dc62d54"
+        '400':
+          description: Yêu cầu không hợp lệ, ví dụ thiếu file hoặc món ăn đã tồn tại
           content:
             application/json:
               schema:
@@ -1039,8 +1047,8 @@ paths:
                   message:
                     type: string
                     example: "Món ăn đã tồn tại"
-        500:
-          description: Thêm món ăn thất bại
+        '500':
+          description: Thêm món ăn thất bại do lỗi server
           content:
             application/json:
               schema:
@@ -1051,7 +1059,8 @@ paths:
                     example: "Thêm món ăn thất bại!"
                   error:
                     type: string
-                    example: "Mô tả lỗi"
+                    example: "Internal server error message"
+
 
   /admin/dish/edit/{slugDish}:
     patch:

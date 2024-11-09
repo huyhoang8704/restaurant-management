@@ -55,7 +55,6 @@ const createDish = async (req, res) => {
                 message : "Món ăn đã tồn tại",
             })
         } else {
-
             const dish = new Dish({
                 name : req.body.name,
                 description: req.body.description,
@@ -65,10 +64,10 @@ const createDish = async (req, res) => {
             });
             const data = await dish.save();
             const name = data.name
-
+            // console.log(dish)
 
             res.status(201).json({
-                message : "Món ăn được thêm thành công!",
+                message : `Sản phẩm ${name} được thêm thành công`,
                 data : data,
             })
         }
