@@ -4,8 +4,9 @@ const menuRoute = require('./menu.route')
 const cartRoute = require('./cart.route')
 const orderRoute = require('./order.route')
 const tableRoute = require('./tableBooking.route')
+const deliveryRouter = require("./deliveryBooking.route")
 
-const authenticateToken = require('../../middlewares/authUser.middleware')
+const  authenticateToken  = require('../../middlewares/authUser.middleware')
 const authenticateTableBooking = require("../../middlewares/tableBooking.middleware")
 
 module.exports = (app) => {
@@ -21,5 +22,7 @@ module.exports = (app) => {
 
     app.use("/order",authenticateToken,authenticateTableBooking,orderRoute);
 
-    app.use("/table",authenticateToken,tableRoute);
+    app.use("/table", authenticateToken, tableRoute);
+    
+    app.use("/delivery",authenticateToken, deliveryRouter);
 }

@@ -15,10 +15,16 @@ const Staff = User.discriminator(
   new mongoose.Schema({}, { discriminatorKey: 'role' })
 );
 
-
+// STATUS ĐỂ XÁC ĐỊNH TRẠNG THÁI NGƯỜI GIAO HÀNG
 const Delivery = User.discriminator(
   "Delivery",
-  new mongoose.Schema({}, { discriminatorKey: 'role' })
+  new mongoose.Schema({
+    status: {
+        type: String,
+        enum: ['available', 'unavailable'],
+        default: 'available'
+    }
+  }, { discriminatorKey: 'role', })
 );
 
 module.exports = { User, Admin, Staff, Delivery };

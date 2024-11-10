@@ -9,6 +9,8 @@ const account = require("./account.route")
 
 
 
+
+
 module.exports = (app) => {
     const PATH = systemConfig.prefixAdmin  // prefix admin
 
@@ -17,4 +19,5 @@ module.exports = (app) => {
     app.use(PATH + "/table", table);
     app.use(PATH + "/tableBooking", tableBooking);
     app.use(PATH + "/accounts", account);
+
 }
