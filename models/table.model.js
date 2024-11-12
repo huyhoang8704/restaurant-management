@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const moment = require('moment');
 
 
 const TableSchema = new mongoose.Schema({
@@ -11,7 +12,23 @@ const TableSchema = new mongoose.Schema({
         type: String,
         enum: ['available', 'unavailable'],
         default: 'available'
-    }
+    },
+
+
+    // ĐOẠN NÀY ĐỂ KHI ĐI VÀO CONTROLLER THÌ DÙNG ĐỂ KIỂM TRA TRONG KHOẢNG THỜI GIAN ĐÓ THÌ NÓ CÓ CẤN LỊCH KO (NÊN ĐỔI TÊN CHỨ KO NÊN DÙNG HISTORY)
+    bookingHistory: [{ 
+        startBooking: {
+            type: Date,
+            required: true,
+            set: (date) => moment(date, 'DD/MM/YYYY HH:mm:ss')
+        },
+        endBooking: {
+            type: Date,
+            required: true,
+            set: (date) => moment(date, 'DD/MM/YYYY HH:mm:ss')
+        },
+    }]
+
 },
 {
     timestamps: true

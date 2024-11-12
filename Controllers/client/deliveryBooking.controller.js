@@ -7,7 +7,7 @@ const createDeliveryOrder = async (req, res) => {
     try {
         const availableDelivery = await Delivery.findOne({
             status: 'available',
-        });
+        });           
         if (!availableDelivery) {
             return res.status(400).json({
                 message: "Đã hết nhân viên giao hàng.",
