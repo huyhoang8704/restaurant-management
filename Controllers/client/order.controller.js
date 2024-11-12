@@ -5,14 +5,21 @@ const TableBooking = require("../../models/tableBooking.model");
 
 
 
-const index = async (req, res) => {
+const createOrder = async (req, res) => {
     try {
         const cart_id = req.cookies.cart_id
+        if (!cart_id) return res.status(400).json({ message: "Cart ID not found in cookies." });
+
         const cart = await Cart.findOne({
             _id : cart_id,
-            deleted : false
         })
+        if (!cart) return res.status(404).json({ message: "Cart not found." });
+        
         let objectOrder = new Order();
+        objectOrder.customer_id = req.user._id
+        objectOrder.orderType = req.body.orderType
+        objectOrder.cart_id = cart_id
+        objectOrder.dishes = [];
         // Tính tổng số tiền
         let totalAmount = 0; 
         if(cart.dishes.length > 0) {
@@ -43,31 +50,30 @@ const index = async (req, res) => {
                 return;
             }
             objectOrder.dineInDetails = table
+            await TableBooking.findByIdAndDelete(req.user._id)
         }
         if (req.body.orderType === "Delivery") {
+            if (!req.body.address || !req.body.deliveryTime) {
+                return res.status(400).json({ message: "Address and delivery time are required for Delivery orders." });
+            }
             let deliveryDetails = {
                 address : req.body.address,
                 deliveryTime : req.body.deliveryTime
             }
             objectOrder.deliveryDetails = deliveryDetails
         }
-        // //! QRPayment
+        //! QRPayment
 
-        // const order = new Order(objectOrder)
-        // await order.save()
+        const order = new Order(objectOrder)
+        await order.save()
 
         //! nếu đặt hàng thành công thì cập nhật lại cart
-        await Cart.findOneAndUpdate({
-            _id : cart_id
-        }, {
-            $set : {
-                deleted : true
-            }
-        })
+        await Cart.findByIdAndDelete(cart_id);
+
 
         res.status(200).json({
             message : "Success!",
-            data : objectOrder
+            data : order
         })
     } catch (error) {
         res.status(501).json({
@@ -78,5 +84,5 @@ const index = async (req, res) => {
 }
 
 module.exports = {
-    index,
+    createOrder,
 }

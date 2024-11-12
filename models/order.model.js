@@ -40,7 +40,7 @@ const OrderSchema = new mongoose.Schema({
 );
 // Validate the order before saving
 OrderSchema.pre('save', function (next) {
-    if (this.orderType === 'Dine In' && !this.dineInDetails.tableId) {
+    if (this.orderType === 'Dine In' && !this.dineInDetails[0].tableId) {
       return next(new Error('Dine In order must have table details.'));
     }
     if (this.orderType === 'Delivery' && !this.deliveryDetails.address) {

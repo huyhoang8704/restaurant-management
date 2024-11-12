@@ -124,70 +124,52 @@ const register = async (req, res) => {
     } 
 }
 const login = async (req, res) => {
-    const {email, password} = req.body;
+    try {
+        const {email, password} = req.body;
+        const user = await User.findOne({ email, deleted: false });
 
+        if(!user) {
+            return res.status(400).json({ message: 'Email đăng nhập không chính xác.' });
+        }
 
-    // Check email
-    const user = await User.findOne({
-        email: email,
-        deleted: false
-    })
-    if(!user) {
-        return res.status(400).json({ message: 'Email đăng nhập không chính xác.' });
-    }
-    // Check Password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-        return res.status(400).json({ message: 'Sai mật khẩu.' });
-    }
-    // Create JWT token
-    const token = jwt.sign(
-        { 
-            id: user.id,
-            fullname: user.fullname,
-        }, 
-        process.env.JWT_SECRET, 
-        { expiresIn: '1d' }
-    );
-    // Lưu lại token vào moongoDB
-    user.token = token;
-    await user.save();
-    
-    res.cookie("token", token, {
-        maxAge: 24 * 60 * 60 * 1000,
-        httpOnly: true,  // ngăn JavaScript truy cập cookie này
-        secure: true     // yêu cầu HTTPS
-    });
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(400).json({ message: 'Sai mật khẩu.' });
+        }
 
-    // Sau khi người dùng đăng nhập thành công tạo CartID cho khách hàng
-    let cart = {};
-    const userCart = await Cart.findOne({
-        customer_id : user._id
-    })
-    // Kiểm tra xem khách hàng có giỏ hàng đó chưa
-    if(!userCart) {
-        cart = new Cart({
-            customer_id : user._id,  // Lưu id của khách hàng vào cart
-            dishes : [],
-            totalAmount : 0,
+        const token = jwt.sign({ id: user.id, fullname: user.fullname }, process.env.JWT_SECRET, { expiresIn: '1d' });
+        user.token = token;
+        await user.save();
+
+        res.cookie("token", token, {
+            maxAge: 24 * 60 * 60 * 1000,
+            httpOnly: true,
+            secure: true
         });
-        await cart.save();
-    } else {
-        cart = userCart
+
+        let cart = {};
+        const userCart = await Cart.findOne({ customer_id: user.id });
+        if(!userCart) {
+            cart = new Cart({ customer_id: user.id, dishes: [], totalAmount: 0 });
+            await cart.save();
+        } else {
+            cart = userCart;
+        }
+
+        res.cookie("cart_id", cart.id, { expires: new Date(Date.now() + 1000 * 60 * 60 * 24) });
+
+        res.status(200).json({
+            message: "Đăng nhập thành công!",
+            user: user.fullname,
+            token: user.token,
+            cart: cart,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Đã có lỗi xảy ra." });
     }
-    res.cookie("cart_id", cart.id , {
-        expires : new Date(Date.now() + 1000 * 60 * 60 * 24),
-    });
+};
 
-
-    res.status(200).json({
-        message : "Đăng nhập thành công!",
-        user : user.fullname,
-        token : user.token,
-        cart : cart
-    })
-
-}
 const updateUser = async (req, res) => {
     try {
         const id = req.user.id

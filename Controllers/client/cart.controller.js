@@ -9,6 +9,7 @@ const index = async (req, res) => {
         const cart = await Cart.findOne({
             _id : cart_id
         })
+        if(!cart) return res.status(400).json({ message : "Không tìm thấy thông tin giỏ hàng!" })
         // CartDetail để show cho FrontEnd
         let cartDetail = {
             dishes : [],

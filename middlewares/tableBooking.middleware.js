@@ -17,6 +17,9 @@ const authenticateTableBooking = async (req, res, next) => {
             }
             next();
         }
+        else {
+            next();
+        }
     } catch (error) {
         res.json({
             message : "Error!",
