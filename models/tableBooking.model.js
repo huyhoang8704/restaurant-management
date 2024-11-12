@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const moment = require('moment');
+const Table = require('./table.model');
 
 const TableBookingSchema = new mongoose.Schema({
     customer_id: String,
@@ -18,8 +20,25 @@ const TableBookingSchema = new mongoose.Schema({
     tableId: {
         type: String,
     },
+    // NGÀY VÀ GIỜ BÀN ĂN HẾT HẠN 
+    expiryDate: {  
+        type: String,
+    },
+    expiryTime: {  
+        type: String,
+    },
 }, {
     timestamps: true
+});
+
+TableBookingSchema.pre('save', function(next) {
+    const bookingDateTime = moment(`${this.bookingDate} ${this.bookingTime}`, 'DD/MM/YYYY HH:mm:ss');  //DÙNG MOMENT ĐỂ KẾT HỢP NGÀY VÀ GIỜ
+    // THÊM HAI TIẾNG VÀO THỜI GIAN ĐẶT
+    const expiryDateTime = bookingDateTime.add(2, 'hours');  
+    this.expiryDate = expiryDateTime.format('DD/MM/YYYY');  
+    this.expiryTime = expiryDateTime.format('HH:mm:ss');  
+
+    next();  
 });
 
 const TableBooking = mongoose.model('TableBooking', TableBookingSchema, "tableBooking");
