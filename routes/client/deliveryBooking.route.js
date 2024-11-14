@@ -1,11 +1,12 @@
 const express = require('express')
 const deliveryBookingcontroller = require('../../Controllers/client/deliveryBooking.controller')
 const router = express.Router()
- const authorizeRoles = require('../../middlewares/authRoles.middleware');
+const authorizeRoles = require('../../middlewares/authRoles.middleware');
+const authenticateToken = require('../../middlewares/authUser.middleware');
 
 
 // CỦA NGƯỜI DÙNG
-router.post('/book', deliveryBookingcontroller.createDeliveryOrder)
+router.post('/book',authenticateToken ,deliveryBookingcontroller.createDeliveryOrder)
 
 
 
