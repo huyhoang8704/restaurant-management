@@ -37,10 +37,13 @@ const DishSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
-    like : {
+    rating: {
         type: Number,
-        default: 0
+        min: 0,
+        max: 5,
+        default: 3
     },
+
     deleted: {    // stock or not
         type: Boolean,
         default: false
