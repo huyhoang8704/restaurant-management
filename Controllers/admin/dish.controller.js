@@ -61,6 +61,7 @@ const createDish = async (req, res) => {
                 price: req.body.price,
                 category: req.body.category,
                 imageUrl: req.body.imageUrl,
+                rating : req.body.rating
             });
             const data = await dish.save();
             const name = data.name
