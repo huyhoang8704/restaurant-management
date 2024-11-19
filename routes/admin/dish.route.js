@@ -13,7 +13,16 @@ router.get('/detail/:slugDish', controller.getDish),
     
 router.get('/list', controller.getDishes),
     
-router.patch('/edit/:slugDish', controller.updateDish),
+router.patch(
+    '/edit/:slugDish',
+    fileUploader.single('file'),
+    async (req, res, next) => {
+        if (req.file) {
+            req.body.imageUrl = req.file.path;
+        }
+        next();
+    },
+    controller.updateDish),
     
 router.post(
     '/create',
