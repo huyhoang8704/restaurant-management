@@ -1546,6 +1546,127 @@ paths:
 
 
 
+  /order/payment:
+    post:
+      summary: Create a payment link
+      tags:
+        - Order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - orderCode
+                - amount
+                - items
+              properties:
+                orderCode:
+                  type: string
+                  description: Mã đơn hàng
+                  example: "ORDER12345"
+                amount:
+                  type: number
+                  description: Tổng số tiền của đơn hàng
+                  example: 50000
+                items:
+                  type: array
+                  description: Danh sách các mặt hàng trong đơn hàng
+                  items:
+                    type: object
+                    required:
+                      - name
+                      - quantity
+                      - price
+                    properties:
+                      name:
+                        type: string
+                        description: Tên sản phẩm
+                        example: "Mì tôm hảo hảo"
+                      quantity:
+                        type: integer
+                        description: Số lượng sản phẩm
+                        example: 2
+                      price:
+                        type: number
+                        description: Giá của sản phẩm
+                        example: 25000
+      responses:
+        200:
+          description: Payment link created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bin:
+                    type: string
+                    description: Mã BIN ngân hàng
+                    example: "970400"
+                  accountNumber:
+                    type: string
+                    description: Số tài khoản của kênh thanh toán
+                    example: "0123456789"
+                  accountName:
+                    type: string
+                    description: Tên chủ tài khoản của kênh thanh toán
+                    example: "Nguyen Van A"
+                  amount:
+                    type: number
+                    description: Số tiền của đơn hàng
+                    example: 50000
+                  description:
+                    type: string
+                    description: Mô tả đơn hàng, sử dụng làm nội dung chuyển khoản
+                    example: "Thanh toán đơn hàng ORDER12345"
+                  orderCode:
+                    type: number
+                    description: Mã đơn hàng
+                    example: 12345
+                  currency:
+                    type: string
+                    description: Đơn vị tiền tệ
+                    example: "VND"
+                  paymentLinkId:
+                    type: string
+                    description: ID của liên kết thanh toán
+                    example: "PL1234567890"
+                  status:
+                    type: string
+                    description: Trạng thái của liên kết thanh toán
+                    example: "Pending"
+                  checkoutUrl:
+                    type: string
+                    description: Đường dẫn trang thanh toán
+                    example: "https://paymentgateway.com/checkout/PL1234567890"
+                  qrCode:
+                    type: string
+                    description: Mã QR để thanh toán
+                    example: "https://paymentgateway.com/qrcode/PL1234567890"
+        400:
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid input data"
+        500:
+          description: Failed to create payment link
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Failed to create payment link"
+
+
+
 
 # ============================================= SCHEMA =================================================================
 
