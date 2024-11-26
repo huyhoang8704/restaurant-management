@@ -12,7 +12,7 @@ const payOS = new PayOS(
 
 const createPayment = async (req, res) => {
   try {
-    const { orderCode, amount, items, cancelUrl, returnUrl, description } = req.body;
+    const { orderCode, amount, items} = req.body;
 
     if (!orderCode || !amount || !items || !items.length) {
       return res.status(400).json({ error: "Invalid input data" });
@@ -21,11 +21,25 @@ const createPayment = async (req, res) => {
     const body = {
       orderCode,
       amount,
-      description: description || "No description provided",
+      description: `Thanh toán đơn hàng ${orderCode}`,
       items,
       cancelUrl: cancelUrl || DEFAULT_CANCEL_URL,
       returnUrl: returnUrl || DEFAULT_RETURN_URL,
     };
+    // const body = {
+    //   orderCode: 1235,
+    //   amount: 5000,
+    //   description: `Thanh toán đơn hàng`,
+    //   items: [
+    //     {
+    //       name: "Mi tom hao hao",
+    //       quantity: 1,
+    //       price : 5000
+    //     },
+    //   ],
+    //   cancelUrl: "http://localhost:3000/cancel.html",
+    //   returnUrl: "http://localhost:3000/success.html",
+    // };
 
     const paymentLinkRes = await payOS.createPaymentLink(body);
     res.status(200).json(paymentLinkRes);

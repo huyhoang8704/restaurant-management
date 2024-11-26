@@ -16,6 +16,7 @@ const app = express();
 const port = process.env.PORT;
 
 // Body-parser middleware nên được gọi trước các tuyến
+app.use(express.static('public'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
