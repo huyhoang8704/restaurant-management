@@ -67,10 +67,29 @@ const checkPaymentStatus = async (req, res) => {
     res.status(500).json({ error: "Failed to check payment status" });
   }
 };
-
+const checkPaymentSuccess = async (req, res) => {
+  try {
+    const { paymentId } = req.body.paymentId;
+    console.log(paymentId)
+    const paymentLink = await payOS.getPaymentLinkInformation(paymentId);
+    if(paymentLink.status === "PAID") {
+        //TODO
+    }
+    res.status(200).json({
+      message: "Payment status checked successfully",
+      status : paymentLink.status,
+      amount : paymentLink.amount,
+      data : paymentLink
+    });
+  } catch (error) {
+    console.error("Error checking payment status:", error.message);
+    res.status(500).json({ error: "Failed to check payment status" });
+  }
+}
 module.exports = { 
     createPayment,
-    checkPaymentStatus, 
+    checkPaymentStatus,
+    checkPaymentSuccess, 
 };
 
 
