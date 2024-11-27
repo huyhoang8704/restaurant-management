@@ -1,6 +1,9 @@
 const PayOS = require("@payos/node");
 require("dotenv").config();
 
+const Order = require('../../models/order.model')
+
+
 const DEFAULT_CANCEL_URL = "http://localhost:3000/cancel.html";
 const DEFAULT_RETURN_URL = "http://localhost:3000/success.html";
 
@@ -51,8 +54,14 @@ const createPayment = async (req, res) => {
 const checkPaymentStatus = async (req, res) => {
   try {
     const { paymentId } = req.params;
+    console.log(paymentId)
     const paymentLink = await payOS.getPaymentLinkInformation(paymentId);
-    res.status(200).json(paymentLink);
+    res.status(200).json({
+      message: "Payment status checked successfully",
+      status : paymentLink.status,
+      amount : paymentLink.amount,
+      data : paymentLink
+    });
   } catch (error) {
     console.error("Error checking payment status:", error.message);
     res.status(500).json({ error: "Failed to check payment status" });

@@ -7,4 +7,6 @@ router.post('/',controller.createOrder)
 
 router.post('/payment',paymentController.createPayment)
 
+router.get('/payment/status/:paymentId',paymentController.checkPaymentStatus)
+
 module.exports = router;
