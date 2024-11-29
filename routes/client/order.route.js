@@ -9,6 +9,6 @@ router.post('/payment',paymentController.createPayment)
 
 router.get('/payment/status/:paymentId',paymentController.checkPaymentStatus)
 
-router.get('/payment/status/success',paymentController.checkPaymentSuccess)
+router.get('/payment/status/success/:paymentId',paymentController.checkPaymentSuccess)
 
 module.exports = router;

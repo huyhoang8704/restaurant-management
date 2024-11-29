@@ -26,8 +26,8 @@ const createPayment = async (req, res) => {
       amount,
       description: `Thanh toán đơn hàng ${orderCode}`,
       items,
-      cancelUrl: cancelUrl || DEFAULT_CANCEL_URL,
-      returnUrl: returnUrl || DEFAULT_RETURN_URL,
+      cancelUrl:  DEFAULT_CANCEL_URL,
+      returnUrl:  DEFAULT_RETURN_URL,
     };
     // const body = {
     //   orderCode: 1235,
@@ -69,11 +69,12 @@ const checkPaymentStatus = async (req, res) => {
 };
 const checkPaymentSuccess = async (req, res) => {
   try {
-    const { paymentId } = req.body.paymentId;
+    const  paymentId  = req.params.paymentId;
     console.log(paymentId)
     const paymentLink = await payOS.getPaymentLinkInformation(paymentId);
     if(paymentLink.status === "PAID") {
-        //TODO
+        //TODO : Update order status (cập nhật lại khi mà đã thanh toán thành công)
+        console.log("Đơn hàng đã thanh toán")
     }
     res.status(200).json({
       message: "Payment status checked successfully",
