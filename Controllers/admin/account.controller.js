@@ -170,6 +170,26 @@ const updateAccount = async (req, res) => {
         })
     } 
 }
+const deleteAccount = async (req, res) => {
+    try {
+        const accountId = req.params.id; // Lấy ID từ URL
+        const deletedAccount = await User.findByIdAndDelete(accountId);
+
+        if (!deletedAccount) {
+            return res.status(404).json({ message: 'Tài khoản không tồn tại!' });
+        }
+
+        res.status(200).json({
+            message: 'Tài khoản đã được xóa thành công!',
+            account: deletedAccount,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Xóa tài khoản thất bại!',
+            error: error.message,
+        });
+    }
+};
 
 module.exports = {
   getAllAccounts,
@@ -177,4 +197,5 @@ module.exports = {
   getRoleAccount,
   login,
   updateAccount,
+  deleteAccount,
 };

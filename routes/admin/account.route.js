@@ -13,4 +13,6 @@ router.get('/:role',controller.getRoleAccount)
 
 router.patch('/edit' ,controller.updateAccount)
 
+router.delete('/delete/:id' ,controller.deleteAccount)
+
 module.exports = router;
