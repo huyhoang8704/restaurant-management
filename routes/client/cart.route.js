@@ -9,4 +9,6 @@ router.post('/add',controller.addToCart)
 
 router.post('/update/:dish_id',controller.updateCart)
 
+router.delete('/delete/:dish_id',controller.deleteDish)
+
 module.exports = router;

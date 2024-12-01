@@ -13,6 +13,7 @@ module.exports.showCartDetail = async (cart, cartDetail) => {
             continue; // Bỏ qua món ăn nếu không tìm thấy
         }
         const object = {
+            id : dish.id,
             name : dish.name,
             price : dish.price,
             quantity : item.quantity,

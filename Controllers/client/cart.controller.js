@@ -115,9 +115,33 @@ const updateCart = async (req, res) => {
         })
     } 
 }
+const deleteDish = async (req, res) => {
+    try {
+        const cart_id = req.cookies.cart_id;
+        const dish_id = req.params.dish_id;
+        await Cart.updateOne(
+            {
+                _id : cart_id,
+                'dishes.dish_id' : dish_id,
+            },
+            {
+                $pull : {dishes : {dish_id : dish_id}}
+            }
+        )
+        res.status(200).json({
+            message : "Xóa món ăn thành công!",
+        })
+    } catch (error) {
+        res.status(500).json({
+            message : "Error!",
+            error : error.message
+        })
+    }   
+}
 
 module.exports = {
     index,
     addToCart,
     updateCart,
+    deleteDish,
 }
