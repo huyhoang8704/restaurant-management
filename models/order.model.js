@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const OrderSchema = new mongoose.Schema({
     // cart_id : String,
+    orderCode : Number,
     customer_id : String,
     orderType: {
         type: String,
@@ -22,6 +23,11 @@ const OrderSchema = new mongoose.Schema({
         type: Number,
         required: [true, 'Total amount is required'],
         min: [0, 'Total amount must be a positive number']
+    },
+    status : {
+        type: String,
+        enum : ['PAID' , 'PENDING'],
+        default : 'PENDING'
     },
     // "Dine In"
     dineInDetails: [{ type: Schema.Types.ObjectId, ref: 'TableBooking' }],

@@ -2,7 +2,7 @@ const PayOS = require("@payos/node");
 require("dotenv").config();
 
 const Order = require('../../models/order.model')
-
+const generate = require('../../helpers/generateHelper')
 
 const DEFAULT_CANCEL_URL = "http://localhost:3000/cancel.html";
 const DEFAULT_RETURN_URL = "http://localhost:3000/success.html";
@@ -15,8 +15,8 @@ const payOS = new PayOS(
 
 const createPayment = async (req, res) => {
   try {
-    const { orderCode, amount, items} = req.body;
-
+    const {amount, items} = req.body;
+    const orderCode = parseInt(generate.generateOTP(10));
     if (!orderCode || !amount || !items || !items.length) {
       return res.status(400).json({ error: "Invalid input data" });
     }
@@ -24,7 +24,7 @@ const createPayment = async (req, res) => {
     const body = {
       orderCode,
       amount,
-      description: `Thanh toán đơn hàng ${orderCode}`,
+      description: `Thanh toán ${orderCode}`,
       items,
       cancelUrl:  DEFAULT_CANCEL_URL,
       returnUrl:  DEFAULT_RETURN_URL,
