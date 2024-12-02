@@ -11,4 +11,6 @@ router.get('/payment/status/:paymentId',paymentController.checkPaymentStatus)
 
 router.get('/payment/status/success/:paymentId',paymentController.checkPaymentSuccess)
 
+router.delete('/payment/cancelled/:paymentId',paymentController.cancelledPayment)
+
 module.exports = router;

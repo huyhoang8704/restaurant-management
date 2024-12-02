@@ -87,10 +87,27 @@ const checkPaymentSuccess = async (req, res) => {
     res.status(500).json({ error: "Failed to check payment status" });
   }
 }
+
+const cancelledPayment = async (req, res) => {
+  try {
+    const  paymentId  = req.params.paymentId;
+    console.log(paymentId)
+    const cancelledPaymentLink = await payOS.cancelPaymentLink(1234, "Đơn thanh toán đã hết hạn");
+
+    res.status(200).json({
+      message: "Hủy đơn thành công",
+      cancelledPaymentLink : cancelledPaymentLink
+    });
+  } catch (error) {
+    console.error("Error checking payment status:", error);
+    res.status(500).json({ error: "Failed to check payment status" });
+  }
+}
 module.exports = { 
     createPayment,
     checkPaymentStatus,
-    checkPaymentSuccess, 
+    checkPaymentSuccess,
+    cancelledPayment, 
 };
 
 
