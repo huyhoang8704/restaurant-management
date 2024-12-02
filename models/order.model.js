@@ -2,14 +2,14 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const OrderSchema = new mongoose.Schema({
-    cart_id : String,
+    // cart_id : String,
     customer_id : String,
     orderType: {
         type: String,
         enum: ['Dine In', 'Delivery'],
         required: true,
     },
-    dishes: [
+    items: [
         {
             name : String,
             dish_id : String,
