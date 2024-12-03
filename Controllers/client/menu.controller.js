@@ -12,14 +12,22 @@ const index = async (req, res) => {
         find.name = searchHelper(req);
     }
     // Sort Dishes
-    let sort = {};
+    let sort = {
+        STT : "desc"
+    };
+
     if(req.query.sortKey && req.query.sortValue){
         sort[req.query.sortKey] = req.query.sortValue
     } else {
         sort.like = "desc"
     }
     // Pagination
-    let limit = 15; // Number of items in a page
+    let limit = 0; // Number of items in a page
+    if(req.query.limit) {
+        limit = parseInt(req.query.limit)
+    } else {
+        limit = 15
+    }
     let skip = 0;  // Default skip is 0
     
     if (req.query.page) {
@@ -48,14 +56,21 @@ const getCategory = async (req, res) => {
         find.name = searchHelper(req);
     }
     // Sort Dishes
-    let sort = {};
+    let sort = {
+        STT : "desc"
+    };
     if(req.query.sortKey && req.query.sortValue){
         sort[req.query.sortKey] = req.query.sortValue
     } else {
         sort.like = "desc"
     }
     // Pagination
-    let limit = 15; // Number of items in a page
+    let limit = 0; // Number of items in a page
+    if(req.query.limit) {
+        limit = parseInt(req.query.limit)
+    } else {
+        limit = 15
+    }
     let skip = 0;  // Default skip is 0
     
     if (req.query.page) {

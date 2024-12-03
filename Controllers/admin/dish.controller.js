@@ -55,7 +55,9 @@ const createDish = async (req, res) => {
                 message : "Món ăn đã tồn tại",
             })
         } else {
+            const STT = await Dish.countDocuments() + 1;
             const dish = new Dish({
+                STT : STT,
                 name : req.body.name,
                 description: req.body.description,
                 price: req.body.price,

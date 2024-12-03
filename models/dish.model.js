@@ -4,6 +4,9 @@ const slugify = require('slugify');
 
 
 const DishSchema = new mongoose.Schema({
+    STT : {
+        type: Number,
+    },
     name: {
         type: String,
         required: [true, 'Dish name is required'],
