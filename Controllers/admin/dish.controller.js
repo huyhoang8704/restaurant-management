@@ -9,6 +9,10 @@ const getDishes = async (req, res) => {
         const dishes = await Dish.find({
             deleted : false
         })
+        .sort({
+            STT : "desc",
+            rating : "desc"
+        })
         res.json({
             code : 200,
             message : "Success!",
