@@ -2,6 +2,7 @@ const PayOS = require("@payos/node");
 require("dotenv").config();
 
 const Order = require('../../models/order.model')
+const TableBooking = require("../../models/tableBooking.model");
 const generate = require('../../helpers/generateHelper')
 
 const DEFAULT_CANCEL_URL = "http://localhost:3000/cancel.html";
@@ -45,7 +46,49 @@ const createPayment = async (req, res) => {
     // };
 
     const paymentLinkRes = await payOS.createPaymentLink(body);
-    res.status(200).json(paymentLinkRes);
+
+    // Create Order
+    let order = new Order({
+      orderCode,
+      customer_id : req.user._id,
+      orderType : req.body.orderType,
+      items,
+      totalAmount : amount,
+      status : "PENDING",
+    });
+    //!
+    if(req.body.orderType === "Dine In") {
+      const table = await TableBooking.find({
+          customer_id : req.user._id
+      })
+      if(!table) {
+          res.status(404).json({
+              message : "Table not found!"
+          })
+          return;
+      }
+      order.dineInDetails = table
+      await TableBooking.findByIdAndDelete(req.user._id)
+  }
+  if (req.body.orderType === "Delivery") {
+      if (!req.body.address || !req.body.deliveryTime) {
+          return res.status(400).json({ message: "Address and delivery time are required for Delivery orders." });
+      }
+      let deliveryDetails = {
+          address : req.body.address,
+          deliveryTime : req.body.deliveryTime
+      }
+      order.deliveryDetails = deliveryDetails
+  }
+  await order.save()
+  console.log(order)
+
+
+    res.status(200).json({
+      message: "Payment link created successfully",
+      paymentLinkRes,
+      order
+    });
   } catch (error) {
     console.error("Error creating payment link:", error.message);
     res.status(500).json({ error: "Failed to create payment link" });

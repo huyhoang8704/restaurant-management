@@ -31,9 +31,10 @@ const OrderSchema = new mongoose.Schema({
     },
     // "Dine In"
     dineInDetails: [{ type: Schema.Types.ObjectId, ref: 'TableBooking' }],
+    // "Delivery"
     deliveryDetails: {
         address: String,
-        deliveryTime: Date,
+        deliveryTime: String,
     },
     deleted: {  // dùng để xem lịch sử của khách hàng => Hóa đơn đã thanh toán delected = true
         type: Boolean,
