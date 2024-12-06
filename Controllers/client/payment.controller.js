@@ -4,7 +4,7 @@ require("dotenv").config();
 const Order = require('../../models/order.model')
 const TableBooking = require("../../models/tableBooking.model");
 const User = require('../../models/user.model')
-const generate = require('../../helpers/generateHelper')
+const generate = require('../../helpers/generateHelper');
 
 const DEFAULT_CANCEL_URL = "http://localhost:3000/cancel.html";
 const DEFAULT_RETURN_URL = "http://localhost:3000/success.html";
@@ -23,32 +23,6 @@ const createPayment = async (req, res) => {
     if (!orderCode || !amount || !items || !items.length) {
       return res.status(400).json({ error: "Invalid input data" });
     }
-
-    const body = {
-      orderCode,
-      amount,
-      description: `Thanh toán ${orderCode}`,
-      items,
-      cancelUrl: 'http://localhost:3001/cancel-payment' ||  DEFAULT_CANCEL_URL,
-      returnUrl:  'http://localhost:3001/success-payment' || DEFAULT_RETURN_URL,
-    };
-    // const body = {
-    //   orderCode: 1235,
-    //   amount: 5000,
-    //   description: `Thanh toán đơn hàng`,
-    //   items: [
-    //     {
-    //       name: "Mi tom hao hao",
-    //       quantity: 1,
-    //       price : 5000
-    //     },
-    //   ],
-    //   cancelUrl: "http://localhost:3000/cancel.html",
-    //   returnUrl: "http://localhost:3000/success.html",
-    // };
-
-    const paymentLinkRes = await payOS.createPaymentLink(body);
-
     // Create Order
     let order = new Order({
       orderCode,
@@ -58,7 +32,35 @@ const createPayment = async (req, res) => {
       totalAmount : amount,
       status : "PENDING",
     });
-    //!
+
+    let paymentLinkRes = "";
+      //! Nếu khách hàng chọn Delivery
+    if (req.body.orderType === "Delivery") {
+        if (!req.body.address || !req.body.deliveryTime) {
+            return res.status(400).json({ message: "Address and delivery time are required for Delivery orders." });
+        }
+        const user = await User.findOne({
+          _id : req.user._id
+        })  
+        let deliveryDetails = {
+            address : req.body.address,
+            deliveryTime : req.body.deliveryTime,
+            phone : req.body.phone || user.phone
+        }
+      order.deliveryDetails = deliveryDetails
+      //* Payment
+      const body = {
+        orderCode,
+        amount,
+        description: `Thanh toán ${orderCode}`,
+        items,
+        cancelUrl: 'http://localhost:3001/cancel-payment' ||  DEFAULT_CANCEL_URL,
+        returnUrl:  'http://localhost:3001/success-payment' || DEFAULT_RETURN_URL,
+      };
+      paymentLinkRes = await payOS.createPaymentLink(body);
+    } 
+
+    //! Nếu khách hàng chọn ăn tại nhà hàng
     if(req.body.orderType === "Dine In") {
       const table = await TableBooking.find({
           customer_id : req.user._id
@@ -71,20 +73,6 @@ const createPayment = async (req, res) => {
       }
       order.dineInDetails = table
       await TableBooking.findByIdAndDelete(req.user._id)
-  }
-  if (req.body.orderType === "Delivery") {
-      if (!req.body.address || !req.body.deliveryTime) {
-          return res.status(400).json({ message: "Address and delivery time are required for Delivery orders." });
-      }
-      const user = await User.findOne({
-        _id : req.user._id
-      })  
-      let deliveryDetails = {
-          address : req.body.address,
-          deliveryTime : req.body.deliveryTime,
-          phone : req.body.phone || user.phone
-      }
-      order.deliveryDetails = deliveryDetails
   }
   await order.save()
   console.log(order)
