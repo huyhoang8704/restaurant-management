@@ -9,7 +9,7 @@ router.post('/payment',paymentController.createPayment)
 
 router.get('/payment/status/:paymentId',paymentController.checkPaymentStatus)
 
-router.get('/payment/status/success/:paymentId',paymentController.checkPaymentSuccess)
+router.patch('/payment/status/success/:paymentId',paymentController.updatePaymentSuccess)
 
 router.delete('/payment/cancelled/:paymentId',paymentController.cancelledPayment)
 

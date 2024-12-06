@@ -15,7 +15,6 @@ const DishSchema = new mongoose.Schema({
     slug: { 
         type: String, 
         slug: "name",
-        unique: true
     },
     description: {
         type: String,
@@ -29,7 +28,6 @@ const DishSchema = new mongoose.Schema({
     slugCategory: { 
         type: String, 
         slug: "category",
-        unique: true
     },
     category: {
         type: String,

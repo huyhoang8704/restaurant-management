@@ -110,13 +110,16 @@ const checkPaymentStatus = async (req, res) => {
     res.status(500).json({ error: "Failed to check payment status" });
   }
 };
-const checkPaymentSuccess = async (req, res) => {
+const updatePaymentSuccess = async (req, res) => {
   try {
     const  paymentId  = req.params.paymentId;
     console.log(paymentId)
     const paymentLink = await payOS.getPaymentLinkInformation(paymentId);
     if(paymentLink.status === "PAID") {
         //TODO : Update order status (cập nhật lại khi mà đã thanh toán thành công)
+        const order = await Order.findOne({orderCode : paymentLink.orderCode})
+        order.status = "PAID";
+        await order.save()
         console.log("Đơn hàng đã thanh toán")
     }
     res.status(200).json({
@@ -149,7 +152,7 @@ const cancelledPayment = async (req, res) => {
 module.exports = { 
     createPayment,
     checkPaymentStatus,
-    checkPaymentSuccess,
+    updatePaymentSuccess,
     cancelledPayment, 
 };
 
