@@ -8,6 +8,7 @@ const generate = require('../../helpers/generateHelper')
 const DEFAULT_CANCEL_URL = "http://localhost:3000/cancel.html";
 const DEFAULT_RETURN_URL = "http://localhost:3000/success.html";
 
+
 const payOS = new PayOS(
   process.env.PAYOS_CLIENT_ID,
   process.env.PAYOS_API_KEY,
@@ -27,8 +28,8 @@ const createPayment = async (req, res) => {
       amount,
       description: `Thanh toán ${orderCode}`,
       items,
-      cancelUrl:  DEFAULT_CANCEL_URL,
-      returnUrl:  DEFAULT_RETURN_URL,
+      cancelUrl: 'http://localhost:3001/cancel-payment' ||  DEFAULT_CANCEL_URL,
+      returnUrl:  'http://localhost:3001/success-payment' || DEFAULT_RETURN_URL,
     };
     // const body = {
     //   orderCode: 1235,
