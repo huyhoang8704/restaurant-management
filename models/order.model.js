@@ -35,6 +35,7 @@ const OrderSchema = new mongoose.Schema({
     deliveryDetails: {
         address: String,
         deliveryTime: String,
+        phone: String,
     },
     deleted: {  // dùng để xem lịch sử của khách hàng => Hóa đơn đã thanh toán delected = true
         type: Boolean,

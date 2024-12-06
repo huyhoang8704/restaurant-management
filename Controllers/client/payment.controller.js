@@ -3,6 +3,7 @@ require("dotenv").config();
 
 const Order = require('../../models/order.model')
 const TableBooking = require("../../models/tableBooking.model");
+const User = require('../../models/user.model')
 const generate = require('../../helpers/generateHelper')
 
 const DEFAULT_CANCEL_URL = "http://localhost:3000/cancel.html";
@@ -75,9 +76,13 @@ const createPayment = async (req, res) => {
       if (!req.body.address || !req.body.deliveryTime) {
           return res.status(400).json({ message: "Address and delivery time are required for Delivery orders." });
       }
+      const user = await User.findOne({
+        _id : req.user._id
+      })  
       let deliveryDetails = {
           address : req.body.address,
-          deliveryTime : req.body.deliveryTime
+          deliveryTime : req.body.deliveryTime,
+          phone : req.body.phone || user.phone
       }
       order.deliveryDetails = deliveryDetails
   }
