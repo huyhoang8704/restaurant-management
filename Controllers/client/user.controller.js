@@ -94,14 +94,14 @@ const register = async (req, res) => {
             secure: true     
         });
         // Đăng ký thành công thì tạo cart cho user
-        const cart = new Cart({
-            user_id : newUser._id,
-            dishes : [],
-        })
-        await cart.save()
-        res.cookie("cart_id", cart.id , {
-            expires : new Date(Date.now() + 1000 * 60 * 60 * 24),
-        });
+        // const cart = new Cart({
+        //     user_id : newUser._id,
+        //     dishes : [],
+        // })
+        // await cart.save()
+        // res.cookie("cart_id", cart.id , {
+        //     expires : new Date(Date.now() + 1000 * 60 * 60 * 24),
+        // });
 
 
         res.status(201).json({
@@ -109,9 +109,9 @@ const register = async (req, res) => {
             user: {
                 fullName: newUser.fullname,
                 email: newUser.email,
-                role : newUser.role
+                role : "user"
             },
-            cart : cart,
+            // cart : cart,
             token
         });
 
@@ -126,7 +126,8 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     try {
         const {email, password} = req.body;
-        const user = await User.findOne({ email, deleted: false });
+        const user = await User.findOne({ email, deleted: false })
+        const userResponse = await User.findOne({ email, deleted: false }).select("fullname email phone address role token");
 
         if(!user) {
             return res.status(400).json({ message: 'Email đăng nhập không chính xác.' });
@@ -147,22 +148,22 @@ const login = async (req, res) => {
             secure: true
         });
 
-        let cart = {};
-        const userCart = await Cart.findOne({ customer_id: user.id });
-        if(!userCart) {
-            cart = new Cart({ customer_id: user.id, dishes: [], totalAmount: 0 });
-            await cart.save();
-        } else {
-            cart = userCart;
-        }
+        // let cart = {};
+        // const userCart = await Cart.findOne({ customer_id: user.id });
+        // if(!userCart) {
+        //     cart = new Cart({ customer_id: user.id, dishes: [], totalAmount: 0 });
+        //     await cart.save();
+        // } else {
+        //     cart = userCart;
+        // }
 
-        res.cookie("cart_id", cart.id, { expires: new Date(Date.now() + 1000 * 60 * 60 * 24) });
+        // res.cookie("cart_id", cart.id, { expires: new Date(Date.now() + 1000 * 60 * 60 * 24) });
 
         res.status(200).json({
             message: "Đăng nhập thành công!",
-            user: user.fullname,
+            user: userResponse,
             token: user.token,
-            cart: cart,
+            // cart: cart,
         });
     } catch (error) {
         console.error(error);
@@ -195,7 +196,7 @@ const updateUser = async (req, res) => {
 const logout = async (req, res) => {
     try {
         res.clearCookie("token");
-        res.clearCookie("cart_id");
+        // res.clearCookie("cart_id");
         res.status(200).json({
             message : "Đăng xuất thành công!",
         })
