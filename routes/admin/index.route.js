@@ -1,6 +1,7 @@
 //!1
 const systemConfig = require("../../config/system")
 const authenticateToken = require('../../middlewares/authUser.middleware')
+const authorizeRoles = require('../../middlewares/authRoles.middleware')
 
 const dashboard = require("./dashboard.route")
 const dish = require("./dish.route")
@@ -15,11 +16,10 @@ const account = require("./account.route")
 module.exports = (app) => {
     const PATH = systemConfig.prefixAdmin  // prefix admin
 
-    app.use(authenticateToken)
-    app.use(PATH + "/dashboard", dashboard);
-    app.use(PATH + "/dish", dish);
-    app.use(PATH + "/table", table);
-    app.use(PATH + "/tableBooking", tableBooking);
-    app.use(PATH + "/accounts", account);
+    app.use(PATH + "/dashboard",authenticateToken,authorizeRoles(['admin','staff']), dashboard);
+    app.use(PATH + "/dish",authenticateToken,authorizeRoles(['admin','staff']),  dish);
+    app.use(PATH + "/table",authenticateToken,authorizeRoles(['admin','staff']),  table);
+    app.use(PATH + "/tableBooking",authenticateToken,authorizeRoles(['admin','staff']),  tableBooking);
+    app.use(PATH + "/accounts",authorizeRoles(['admin','staff','delivery']),  account);
 
 }
