@@ -40,10 +40,21 @@ const totalRevenue = async (req, res) => {
         res.status(500).json({ message: "Failed to calculate revenue", error: error.message });
     }
 }
-
+const totalDishes = async (req, res) => {
+    try {
+        const totalDishes = await Order.aggregate([
+            { $unwind: "$items" }, // Phân rã các món trong từng order
+            { $group: { _id: null, total: { $sum: "$items.quantity" } } }
+        ]);
+        res.status(200).json({ totalDishes: totalDishes[0]?.total || 0 });
+    } catch (error) {
+        res.status(500).json({ message: "Failed to calculate total dishes", error: error.message });
+    }
+}
 
 
 module.exports = {
     index,
     totalRevenue,
+    totalDishes,
 }

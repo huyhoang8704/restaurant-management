@@ -7,6 +7,7 @@ router.get('/',controller.index)
 
 router.get('/total-revenue',controller.totalRevenue)
 
+router.get('/total-dishes',controller.totalDishes)
 
 
 module.exports = router;
