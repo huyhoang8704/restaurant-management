@@ -13,4 +13,7 @@ router.patch('/payment/status/success/:paymentId',paymentController.updatePaymen
 
 router.delete('/payment/cancelled/:paymentId',paymentController.cancelledPayment)
 
+router.patch('/rate/:orderCode', controller.rateOrder);
+
+
 module.exports = router;
