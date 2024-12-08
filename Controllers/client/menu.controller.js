@@ -101,9 +101,28 @@ const getDish = async (req, res) => {
         dish : dish
     })
 }
+const getTopRatedDishes = async (req, res) => {
+    try {
+        const dishes = await Dish.find({ deleted: false })
+            .sort({ rating: -1 })
+            .limit(10);
+
+        res.status(200).json({
+            message: "Danh sách món ăn theo rating",
+            data: dishes,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Lấy danh sách món ăn thất bại",
+            error: error.message,
+        });
+    }
+};
+
 
 module.exports = {
     index,
     getCategory,
     getDish,
+    getTopRatedDishes,
 }

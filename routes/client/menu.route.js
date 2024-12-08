@@ -9,5 +9,7 @@ router.get('/:slugCategory',controller.getCategory)
 
 router.get('/detail/:slug',controller.getDish)
 
+router.patch('/top-rated', controller.getTopRatedDishes);
+
 
 module.exports = router;
