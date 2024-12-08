@@ -29,10 +29,21 @@ const index = async (req, res) => {
         });
     }
 };
-
+const totalRevenue = async (req, res) => {
+    try {
+        const totalRevenue = await Order.aggregate([
+            { $match: { status: "PAID" } },
+            { $group: { _id: null, total: { $sum: "$totalAmount" } } }
+        ]);
+        res.status(200).json({ totalRevenue: totalRevenue[0]?.total || 0 });
+    } catch (error) {
+        res.status(500).json({ message: "Failed to calculate revenue", error: error.message });
+    }
+}
 
 
 
 module.exports = {
     index,
+    totalRevenue,
 }

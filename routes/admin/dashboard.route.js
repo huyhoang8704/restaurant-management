@@ -5,5 +5,8 @@ const router = express.Router()
 
 router.get('/',controller.index)
 
+router.get('/total-revenue',controller.totalRevenue)
+
+
 
 module.exports = router;
