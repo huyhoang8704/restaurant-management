@@ -14,7 +14,7 @@ const index = async (req, res) => {
 
         // Định dạng lại dữ liệu đơn hàng
         const formattedOrders = orders.map((order, index) => ({
-            id: order.orderCode,
+            orderCode: order.orderCode,
             customer: customers[index]?.fullname,
             menuItems: order.items.map(item => item.name).join(", "),
             totalPayment: `${order.totalAmount}`,
