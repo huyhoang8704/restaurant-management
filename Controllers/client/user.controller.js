@@ -219,6 +219,7 @@ const getOrdersByUser = async (req, res) => {
 
         // Tìm danh sách đơn hàng dựa trên customer_id
         const orders = await Order.find({ customer_id, deleted: false })
+                                  .sort({ createdAt: -1 }) 
                                   .populate('dineInDetails') // Nếu muốn lấy chi tiết thông tin bàn
                                   .exec();
 
