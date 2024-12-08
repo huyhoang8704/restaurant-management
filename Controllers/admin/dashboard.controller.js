@@ -59,10 +59,42 @@ const totalOrders = async (req, res) => {
         res.status(500).json({ message: "Failed to calculate total orders", error: error.message });
     }
 }
+const changeStatus = async (req, res) => {
+    try {
+        const { orderCode } = req.params;
+
+        const updatedOrder = await Order.findOneAndUpdate(
+            { orderCode },
+            { 
+                status : "PAID" 
+            },
+            { new: true } 
+        );
+        if (!updatedOrder) {
+            return res.status(404).json({
+                message: `Không tìm thấy đơn hàng với mã ${orderCode}`,
+            });
+        }
+
+        res.status(200).json({
+            message: `Trạng thái đơn hàng ${orderCode} đã được cập nhật thành công.`,
+            data: updatedOrder,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Cập nhật trạng thái đơn hàng thất bại.",
+            error: error.message,
+        });
+    }
+};
+
+
+
 
 module.exports = {
     index,
     totalRevenue,
     totalDishes,
     totalOrders,
+    changeStatus,
 }

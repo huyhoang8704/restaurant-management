@@ -11,5 +11,7 @@ router.get('/total-dishes',controller.totalDishes)
 
 router.get('/total-orders',controller.totalOrders)
 
+router.patch('/change-status/:orderCode',controller.changeStatus)
+
 
 module.exports = router;
