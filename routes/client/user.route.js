@@ -23,5 +23,7 @@ router.post('/requestOtp',authenticateToken, Otpcontroller.requestOtp)
 
 router.post('/verifyOtp',authenticateToken ,Otpcontroller.VerifyOtpController)
 
+router.get('/orders',authenticateToken, controller.getOrdersByUser)
+
 
 module.exports = router;

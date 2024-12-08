@@ -4,6 +4,7 @@ const dotenv = require('dotenv')
 
 const User = require('../../models/user.model')
 const Cart = require('../../models/cart.model')
+const Order = require('../../models/order.model')
 
 
 dotenv.config();
@@ -207,6 +208,37 @@ const logout = async (req, res) => {
         })
     } 
 }
+const getOrdersByUser = async (req, res) => {
+    try {
+        // console.log(req.user)
+        const customer_id = req.user._id;
+
+        if (!customer_id) {
+            return res.status(400).json({ message: "Customer ID is required" });
+        }
+
+        // Tìm danh sách đơn hàng dựa trên customer_id
+        const orders = await Order.find({ customer_id, deleted: false })
+                                  .populate('dineInDetails') // Nếu muốn lấy chi tiết thông tin bàn
+                                  .exec();
+
+        if (!orders.length) {
+            return res.status(404).json({ message: "No orders found for this customer" });
+        }
+
+        res.status(200).json({
+            message: `Danh sách đơn hàng của ${req.user.fullname}`,
+            orderQuantity: orders.length,
+            data: orders,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Failed to retrieve orders",
+            error: error.message,
+        });
+    }
+};
+
 
 module.exports = {
     getUser,
@@ -215,4 +247,5 @@ module.exports = {
     login,
     updateUser,
     logout,
+    getOrdersByUser,
 }
