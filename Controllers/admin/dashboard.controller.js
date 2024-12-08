@@ -51,10 +51,18 @@ const totalDishes = async (req, res) => {
         res.status(500).json({ message: "Failed to calculate total dishes", error: error.message });
     }
 }
-
+const totalOrders = async (req, res) => {
+    try {
+        const totalOrders = await Order.countDocuments();
+        res.status(200).json({ totalOrders });
+    } catch (error) {
+        res.status(500).json({ message: "Failed to calculate total orders", error: error.message });
+    }
+}
 
 module.exports = {
     index,
     totalRevenue,
     totalDishes,
+    totalOrders,
 }
