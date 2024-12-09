@@ -8,6 +8,7 @@ const dish = require("./dish.route")
 const table = require("./table.route")
 const tableBooking = require("./tableBooking.router")
 const account = require("./account.route")
+const delivery = require('./delivery.route')
 
 
 
@@ -20,6 +21,7 @@ module.exports = (app) => {
     app.use(PATH + "/dish",authenticateToken,authorizeRoles(['admin','staff']),  dish);
     app.use(PATH + "/table",authenticateToken,authorizeRoles(['admin','staff']),  table);
     app.use(PATH + "/tableBooking",authenticateToken,authorizeRoles(['admin','staff']),  tableBooking);
-    app.use(PATH + "/accounts",authorizeRoles(['admin','staff','delivery']),  account);
+    app.use(PATH + "/accounts", account);
+    app.use(PATH + "/delivery",authenticateToken, authorizeRoles(['admin','delivery']),  delivery);
 
 }
