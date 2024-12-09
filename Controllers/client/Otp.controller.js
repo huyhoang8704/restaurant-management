@@ -1,4 +1,5 @@
 const Otp = require('../../models/otp.model');
+const bcrypt = require('bcryptjs')
 const { sendOTPEmail } = require('../../helpers/emailHelper'); 
 const User = require('../../models/user.model')
 
@@ -42,7 +43,9 @@ const VerifyOtpController = async (req, res) => {
                     message: "User does not exist"
                 });
             }
-            user.password = newPassword;
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+            user.password = hashedPassword;
+
             await user.save();
             res.status(200).json({
                 message: "Otp is valid and password has been changed",
