@@ -29,7 +29,21 @@ const getOrders = async (req, res) => {
         res.status(500).json({ message: "Failed to retrieve orders", error: error.message });
     }
 }
+const getOrder = async (req, res) => {
+    try {
+        const { orderCode } = req.params;
+        const order = await Order.findOne({ orderCode, deleted: false });
+        const customer = await User.findById(order.customer_id).select("fullname");
+        if (!order) {
+            return res.status(404).json({ message: "Order not found" });
+        }
+        res.status(200).json({ order , customer });
+    } catch (error) {
+        res.status(500).json({ message: "Failed to retrieve order", error: error.message });
+    }
+}
 
 module.exports = {
     getOrders,
+    getOrder,
 }

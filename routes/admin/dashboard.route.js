@@ -11,6 +11,8 @@ router.get('/total-dishes',controller.totalDishes)
 
 router.get('/total-orders',controller.totalOrders)
 
+router.get('/get-order/:orderCode',controller.getOrder)
+
 router.patch('/change-status/:orderCode',controller.changeStatus)
 
 
