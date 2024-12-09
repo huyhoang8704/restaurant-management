@@ -5,7 +5,16 @@ const User = require('../../models/user.model');
 
 const getallBookings = async (req, res) => {
     try {
-        const bookings = await TableBooking.find();
+        const { date } = req.query; // Lấy ngày từ query params (dạng dd/mm/yyyy)
+
+        let filter = {};
+        if (date) {
+            filter.bookingDate = date;
+        }
+
+        // Tìm kiếm danh sách đặt bàn với bộ lọc
+        const bookings = await TableBooking.find(filter)
+
         res.status(200).json(bookings);
     } catch (error) {
         res.status(500).json({
@@ -14,6 +23,7 @@ const getallBookings = async (req, res) => {
         });
     }
 };
+
 const getBooking = async (req, res) => {
     try {
         const booking = await TableBooking.findOne({ _id: req.params.id })
