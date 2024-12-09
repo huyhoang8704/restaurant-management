@@ -19,9 +19,9 @@ router.post('/login' , controller.login)
 
 router.get('/logout',authenticateToken, controller.logout)
 
-router.post('/requestOtp',authenticateToken, Otpcontroller.requestOtp)
+router.post('/requestOtp', Otpcontroller.requestOtp)
 
-router.post('/verifyOtp',authenticateToken ,Otpcontroller.VerifyOtpController)
+router.post('/verifyOtp',Otpcontroller.VerifyOtpController)
 
 router.get('/orders',authenticateToken, controller.getOrdersByUser)
 
