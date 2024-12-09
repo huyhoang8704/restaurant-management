@@ -72,7 +72,9 @@ const createPayment = async (req, res) => {
           return;
       }
       order.dineInDetails = table
-      await TableBooking.findByIdAndDelete(req.user._id)
+      await TableBooking.deleteOne({
+          customer_id : req.user._id
+      })
   }
   await order.save()
   console.log(order)
