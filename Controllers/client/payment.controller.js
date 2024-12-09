@@ -72,12 +72,15 @@ const createPayment = async (req, res) => {
           return;
       }
       order.dineInDetails = table
-      await TableBooking.deleteOne({
+      await TableBooking.updateOne({
           customer_id : req.user._id
+      }, {
+        deleted : true,
+        orderCode : orderCode
       })
   }
   await order.save()
-  console.log(order)
+  // console.log(order)
 
 
     res.status(200).json({

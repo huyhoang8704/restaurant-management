@@ -4,6 +4,7 @@ const Table = require('./table.model');
 
 const TableBookingSchema = new mongoose.Schema({
     customer_id: String,
+    orderCode: Number,
     bookingDate: {  
         type: String,
         required: [true, 'DD/MM/YYYY'] 
@@ -19,6 +20,10 @@ const TableBookingSchema = new mongoose.Schema({
     },
     tableId: {
         type: String,
+    },
+    deleted: {
+        type: Boolean,
+        default: false
     },
     // NGÀY VÀ GIỜ BÀN ĂN HẾT HẠN 
     expiryDate: {  

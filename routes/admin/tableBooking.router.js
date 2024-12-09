@@ -5,5 +5,7 @@ const tableBookingcontroller = require('../../Controllers/admin/tableBooking.con
 
 router.get('/list', tableBookingcontroller.getallBookings)
 
+router.get('/detail/:id', tableBookingcontroller.getBooking)
+
 
 module.exports = router;
