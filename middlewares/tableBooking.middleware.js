@@ -13,7 +13,7 @@ const authenticateTableBooking = async (req, res, next) => {
             })
             // Nếu chưa đặt bàn
             if(!availableTableBooking) {
-                return res.status(403).json({ message: 'Bạn chưa đặt bàn' });
+                return res.status(404).json({ message: 'Bạn chưa đặt bàn' });
             }
             next();
         }
