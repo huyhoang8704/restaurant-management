@@ -46,7 +46,7 @@ const getBooking = async (req, res) => {
             phone: user.phone,
             bookingDate: booking.bookingDate,
             bookingTime: booking.bookingTime,
-            items : order.items,
+            items : order?.items,
         };
 
         res.status(200).json(detailedBooking);
