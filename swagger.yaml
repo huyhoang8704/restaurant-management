@@ -713,6 +713,70 @@ paths:
                     type: string
                     example: "Server error"
 
+  /menu/top-rated:
+    patch:
+      summary: Get top-rated dishes
+      tags:
+        - Menu
+      description: Lấy danh sách 10 món ăn có rating cao nhất, được sắp xếp giảm dần theo rating.
+      responses:
+        200:
+          description: Danh sách 10 món ăn có rating cao nhất.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Thông báo kết quả
+                    example: "Danh sách món ăn theo rating"
+                  data:
+                    type: array
+                    description: Danh sách món ăn
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          description: Tên món ăn
+                          example: "Mì Quảng"
+                        description:
+                          type: string
+                          description: Mô tả món ăn
+                          example: "Món mì truyền thống của miền Trung"
+                        price:
+                          type: number
+                          description: Giá món ăn
+                          example: 50000
+                        category:
+                          type: string
+                          description: Danh mục món ăn
+                          example: "Món chính"
+                        imageUrl:
+                          type: string
+                          description: URL hình ảnh món ăn
+                          example: "https://example.com/image.jpg"
+                        rating:
+                          type: number
+                          description: Điểm đánh giá món ăn
+                          example: 4.8
+        500:
+          description: Lấy danh sách món ăn thất bại
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Thông báo lỗi
+                    example: "Lấy danh sách món ăn thất bại"
+                  error:
+                    type: string
+                    description: Chi tiết lỗi
+                    example: "Internal Server Error"
+
 
   /table/create:
     post:
@@ -966,12 +1030,302 @@ paths:
                     type: string
                     example: "Có lỗi khi cập nhật số lượng món ăn"
 
+  /order:
+    post:
+      summary: Create Order
+      tags:
+        - Orders
+      description: Tạo đơn hàng mới từ giỏ hàng của người dùng.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderType:
+                  type: string
+                  enum: ["Dine In", "Delivery"]
+                  description: Loại đơn hàng
+                  example: "Delivery"
+                address:
+                  type: string
+                  description: Địa chỉ giao hàng (bắt buộc với Delivery)
+                  example: "123 Main St."
+                deliveryTime:
+                  type: string
+                  description: Thời gian giao hàng (bắt buộc với Delivery)
+                  example: "2025-01-02T12:00:00Z"
+      responses:
+        200:
+          description: Tạo đơn hàng thành công.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Success!"
+                  data:
+                    $ref: "#/components/schemas/Order"
+        400:
+          description: Lỗi dữ liệu đầu vào không hợp lệ.
+        500:
+          description: Lỗi hệ thống.
+
+  order/rate/{orderCode}:
+    patch:
+      tags:
+        - Orders
+      summary: "Đánh giá đơn hàng"
+      description: "API để khách hàng đánh giá đơn hàng đã thanh toán."
+      parameters:
+        - name: orderCode
+          in: path
+          required: true
+          description: "Mã đơn hàng"
+          schema:
+            type: string
+        - name: rating
+          in: body
+          required: true
+          description: "Đánh giá của khách hàng (1-5)"
+          schema:
+            type: object
+            properties:
+              rating:
+                type: integer
+                format: int32
+                minimum: 1
+                maximum: 5
+                example: 5
+      responses:
+        200:
+          description: "Đánh giá thành công"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    description: "Chi tiết đơn hàng đã được đánh giá"
+        400:
+          description: "Dữ liệu không hợp lệ (rating không nằm trong khoảng 1-5)"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        404:
+          description: "Không tìm thấy đơn hàng hoặc đơn hàng không hợp lệ"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        500:
+          description: "Lỗi từ server"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+
+
+  /order/payment:
+    post:
+      summary: Create Payment Link
+      tags:
+        - Payments
+      description: Tạo liên kết thanh toán cho đơn hàng.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                  description: Tổng số tiền thanh toán.
+                  example: 5000
+                items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: Tên món ăn.
+                        example: "Mì tôm"
+                      quantity:
+                        type: integer
+                        description: Số lượng món ăn.
+                        example: 2
+                      price:
+                        type: number
+                        description: Giá mỗi món ăn.
+                        example: 2500
+                orderType:
+                  type: string
+                  enum: ["Dine In", "Delivery"]
+                  description: Loại đơn hàng
+                  example: "Delivery"
+                address:
+                  type: string
+                  description: Địa chỉ giao hàng (bắt buộc với Delivery)
+                  example: "123 Main St."
+                deliveryTime:
+                  type: string
+                  description: Thời gian giao hàng (bắt buộc với Delivery)
+                  example: "2025-01-02T12:00:00Z"
+      responses:
+        200:
+          description: Tạo liên kết thanh toán thành công.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Payment link created successfully"
+                  paymentLinkRes:
+                    $ref: "#/components/schemas/PaymentLinkResponse"
+                  order:
+                    $ref: "#/components/schemas/Order"
+        400:
+          description: Dữ liệu đầu vào không hợp lệ.
+        500:
+          description: Lỗi hệ thống.
+
+  /order/payment/status/{paymentId}:
+    get:
+      summary: Get status of a payment
+      tags:
+        - Payments
+      description: Kiểm tra trạng thái thanh toán của một liên kết thanh toán.
+      parameters:
+        - name: paymentId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID liên kết thanh toán.
+      responses:
+        200:
+          description: Trạng thái thanh toán được kiểm tra thành công.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Payment status checked successfully"
+                  status:
+                    type: string
+                    description: Trạng thái thanh toán.
+                    example: "PAID"
+                  amount:
+                    type: number
+                    description: Số tiền thanh toán.
+                    example: 5000
+                  data:
+                    $ref: "#/components/schemas/PaymentLink"
+        500:
+          description: Lỗi hệ thống.
+
+  /order/payment/status/success/{paymentId}:
+    patch:
+      summary: Update Payment Success
+      tags:
+        - Payments
+      description: Cập nhật trạng thái thành công cho thanh toán.
+      parameters:
+        - name: paymentId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID liên kết thanh toán.
+      responses:
+        200:
+          description: Cập nhật trạng thái thành công.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Payment status checked successfully"
+                  status:
+                    type: string
+                    description: Trạng thái thanh toán.
+                    example: "PAID"
+                  amount:
+                    type: number
+                    description: Số tiền thanh toán.
+                    example: 5000
+                  data:
+                    $ref: "#/components/schemas/PaymentLink"
+        500:
+          description: Lỗi hệ thống.
+
+  /order/payment/cancelled/{paymentId}:
+    delete:
+      summary: Cancel Payment
+      tags:
+        - Payments
+      description: Hủy thanh toán với ID liên kết thanh toán cụ thể.
+      parameters:
+        - name: paymentId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID liên kết thanh toán.
+      responses:
+        200:
+          description: Hủy thanh toán thành công.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Hủy đơn thành công"
+                  cancelledPaymentLink:
+                    $ref: "#/components/schemas/PaymentLink"
+        500:
+          description: Lỗi hệ thống.
+
+
+
+
+
+
+
   /admin/dish/create:
     post:
       summary: Thêm món ăn mới
       description: Thêm một món ăn mới vào hệ thống quản lý nhà hàng.
       tags:
-        - Dish
+        - Admin Dish
       requestBody:
         required: true
         content:
@@ -1067,7 +1421,7 @@ paths:
       summary: Cập nhật thông tin món ăn
       description: Cho phép admin cập nhật thông tin của một món ăn dựa trên `slugDish`.
       tags:
-        - Dish
+        - Admin Dish
       parameters:
         - name: slugDish
           in: path
@@ -1155,7 +1509,7 @@ paths:
       summary: Lấy danh sách các món ăn
       description: Trả về danh sách tất cả các món ăn chưa bị xóa trong hệ thống.
       tags:
-        - Dish
+        - Admin Dish
       responses:
         200:
           description: Thành công
@@ -1229,7 +1583,7 @@ paths:
       summary: Lấy chi tiết món ăn theo slug
       description: Trả về chi tiết món ăn dựa trên slug của món ăn, bao gồm tên, mô tả, số lượt thích, giá, hình ảnh và loại món ăn.
       tags:
-        - Dish
+        - Admin Dish
       parameters:
         - name: slugDish
           in: path
@@ -1299,7 +1653,7 @@ paths:
       summary: Xóa món ăn theo slug
       description: Đánh dấu món ăn là đã xóa bằng cách thiết lập trường `deleted` thành `true` trong cơ sở dữ liệu.
       tags:
-        - Dish
+        - Admin Dish
       parameters:
         - name: slugDish
           in: path
@@ -1545,127 +1899,408 @@ paths:
           description: Error updating account.
 
 
-
-  /order/payment:
-    post:
-      summary: Create a payment link
+  /admin/dashboard:
+    get:
       tags:
-        - Order
+        - Admin Dashboard
+      summary: "Lấy danh sách tất cả các đơn hàng"
+      description: "Lấy danh sách các đơn hàng với thông tin chi tiết như mã đơn hàng, khách hàng, món ăn, tổng tiền, và trạng thái."
+      responses:
+        200:
+          description: "Danh sách các đơn hàng"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orders:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        orderCode:
+                          type: string
+                          example: "ORD12345"
+                        customer:
+                          type: string
+                          example: "John Doe"
+                        menuItems:
+                          type: string
+                          example: "Pizza, Salad, Pasta"
+                        totalPayment:
+                          type: string
+                          example: "300000"
+                        status:
+                          type: string
+                          example: "PENDING"
+        500:
+          description: "Lỗi hệ thống"
+
+  /admin/dashboard/total-revenue:
+    get:
+      tags:
+        - Admin Dashboard
+      summary: "Tổng doanh thu từ các đơn hàng đã thanh toán"
+      description: "Tính tổng doanh thu từ các đơn hàng có trạng thái 'PAID'."
+      responses:
+        200:
+          description: "Tổng doanh thu"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalRevenue:
+                    type: number
+                    format: float
+                    example: 1500000
+        500:
+          description: "Lỗi hệ thống"
+
+  /admin/dashboard/total-dishes:
+    get:
+      tags:
+        - Admin Dashboard
+      summary: "Tổng số lượng món ăn đã bán"
+      description: "Tính tổng số lượng món ăn trong các đơn hàng đã thanh toán."
+      responses:
+        200:
+          description: "Tổng số lượng món ăn"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalDishes:
+                    type: number
+                    example: 100
+        500:
+          description: "Lỗi hệ thống"
+
+  /admin/dashboard/total-orders:
+    get:
+      tags:
+        - Admin Dashboard
+      summary: "Tổng số đơn hàng"
+      description: "Tính tổng số đơn hàng trong hệ thống."
+      responses:
+        200:
+          description: "Tổng số đơn hàng"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalOrders:
+                    type: number
+                    example: 200
+        500:
+          description: "Lỗi hệ thống"
+
+  /admin/dashboard/get-order/{orderCode}:
+    get:
+      tags:
+        - Admin Dashboard
+      summary: "Lấy thông tin chi tiết đơn hàng"
+      description: "Lấy thông tin chi tiết của đơn hàng theo mã đơn hàng."
+      parameters:
+        - name: orderCode
+          in: path
+          required: true
+          description: "Mã đơn hàng cần lấy thông tin"
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Thông tin chi tiết đơn hàng"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  order:
+                    type: object
+                    properties:
+                      orderCode:
+                        type: string
+                        example: "ORD12345"
+                      status:
+                        type: string
+                        example: "PAID"
+                      totalAmount:
+                        type: number
+                        format: float
+                        example: 300000
+                      items:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: "Pizza"
+                            quantity:
+                              type: number
+                              example: 2
+                  customer:
+                    type: object
+                    properties:
+                      fullname:
+                        type: string
+                        example: "John Doe"
+        404:
+          description: "Không tìm thấy đơn hàng"
+        500:
+          description: "Lỗi hệ thống"
+
+  /admin/dashboard/change-status/{orderCode}:
+    patch:
+      tags:
+        - Admin Dashboard
+      summary: "Cập nhật trạng thái đơn hàng"
+      description: "Cập nhật trạng thái đơn hàng (ví dụ: từ 'PENDING' thành 'PAID')."
+      parameters:
+        - name: orderCode
+          in: path
+          required: true
+          description: "Mã đơn hàng cần cập nhật trạng thái"
+          schema:
+            type: string
       requestBody:
-        required: true
+        description: "Thông tin trạng thái mới của đơn hàng"
         content:
           application/json:
             schema:
               type: object
-              required:
-                - orderCode
-                - amount
-                - items
               properties:
-                orderCode:
+                status:
                   type: string
-                  description: Mã đơn hàng
-                  example: "ORDER12345"
-                amount:
-                  type: number
-                  description: Tổng số tiền của đơn hàng
-                  example: 50000
-                items:
-                  type: array
-                  description: Danh sách các mặt hàng trong đơn hàng
-                  items:
-                    type: object
-                    required:
-                      - name
-                      - quantity
-                      - price
-                    properties:
-                      name:
-                        type: string
-                        description: Tên sản phẩm
-                        example: "Mì tôm hảo hảo"
-                      quantity:
-                        type: integer
-                        description: Số lượng sản phẩm
-                        example: 2
-                      price:
-                        type: number
-                        description: Giá của sản phẩm
-                        example: 25000
+                  enum: ["PENDING", "PAID", "CANCELLED"]
+                  example: "PAID"
       responses:
         200:
-          description: Payment link created successfully
+          description: "Cập nhật trạng thái thành công"
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  bin:
+                  message:
                     type: string
-                    description: Mã BIN ngân hàng
-                    example: "970400"
-                  accountNumber:
-                    type: string
-                    description: Số tài khoản của kênh thanh toán
-                    example: "0123456789"
-                  accountName:
-                    type: string
-                    description: Tên chủ tài khoản của kênh thanh toán
-                    example: "Nguyen Van A"
-                  amount:
-                    type: number
-                    description: Số tiền của đơn hàng
-                    example: 50000
-                  description:
-                    type: string
-                    description: Mô tả đơn hàng, sử dụng làm nội dung chuyển khoản
-                    example: "Thanh toán đơn hàng ORDER12345"
-                  orderCode:
-                    type: number
-                    description: Mã đơn hàng
-                    example: 12345
-                  currency:
-                    type: string
-                    description: Đơn vị tiền tệ
-                    example: "VND"
-                  paymentLinkId:
-                    type: string
-                    description: ID của liên kết thanh toán
-                    example: "PL1234567890"
-                  status:
-                    type: string
-                    description: Trạng thái của liên kết thanh toán
-                    example: "Pending"
-                  checkoutUrl:
-                    type: string
-                    description: Đường dẫn trang thanh toán
-                    example: "https://paymentgateway.com/checkout/PL1234567890"
-                  qrCode:
-                    type: string
-                    description: Mã QR để thanh toán
-                    example: "https://paymentgateway.com/qrcode/PL1234567890"
-        400:
-          description: Invalid input data
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Invalid input data"
+                    example: "Trạng thái đơn hàng ORD12345 đã được cập nhật thành công."
+                  data:
+                    type: object
+                    properties:
+                      orderCode:
+                        type: string
+                        example: "ORD12345"
+                      status:
+                        type: string
+                        example: "PAID"
+        404:
+          description: "Không tìm thấy đơn hàng"
         500:
-          description: Failed to create payment link
+          description: "Lỗi hệ thống"
+
+
+  /admin/tableBooking/list:
+    get:
+      tags:
+        - Admin Table Bookings
+      summary: "Lấy danh sách tất cả các đơn đặt bàn"
+      description: "Lấy danh sách các đơn đặt bàn với bộ lọc theo ngày nếu có."
+      parameters:
+        - name: date
+          in: query
+          description: "Ngày cần lọc theo định dạng dd/mm/yyyy"
+          required: false
+          schema:
+            type: string
+            example: "01/01/2025"
+      responses:
+        200:
+          description: "Danh sách các đơn đặt bàn"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    bookingId:
+                      type: string
+                      example: "605c72ef153207001f6470c"
+                    customer:
+                      type: string
+                      example: "John Doe"
+                    bookingDate:
+                      type: string
+                      example: "01/01/2025"
+                    bookingTime:
+                      type: string
+                      example: "18:00"
+                    status:
+                      type: string
+                      example: "CONFIRMED"
+        500:
+          description: "Lỗi hệ thống"
+
+  /admin/tableBooking/detail/{id}:
+    get:
+      tags:
+        - Admin Table Bookings
+      summary: "Lấy thông tin chi tiết của một đơn đặt bàn"
+      description: "Lấy thông tin chi tiết của đơn đặt bàn theo id, bao gồm thông tin khách hàng, đơn hàng và món ăn."
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "ID của đơn đặt bàn cần lấy thông tin chi tiết"
+          schema:
+            type: string
+            example: "605c72ef153207001f6470c"
+      responses:
+        200:
+          description: "Thông tin chi tiết của đơn đặt bàn"
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  error:
+                  bookingId:
                     type: string
-                    example: "Failed to create payment link"
+                    example: "605c72ef153207001f6470c"
+                  customer:
+                    type: string
+                    example: "John Doe"
+                  phone:
+                    type: string
+                    example: "123456789"
+                  bookingDate:
+                    type: string
+                    example: "01/01/2025"
+                  bookingTime:
+                    type: string
+                    example: "18:00"
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          example: "Pizza"
+                        quantity:
+                          type: integer
+                          example: 2
+        404:
+          description: "Không tìm thấy đơn đặt bàn"
+        500:
+          description: "Lỗi hệ thống"
 
 
+
+  /admin/delivery/orders:
+    get:
+      tags:
+        - Delivery Orders
+      summary: "Lấy danh sách tất cả các đơn hàng giao hàng"
+      description: "Lấy danh sách các đơn hàng giao hàng chưa bị xóa, sắp xếp theo thời gian tạo mới nhất."
+      responses:
+        200:
+          description: "Danh sách các đơn hàng giao hàng"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  formattedOrders:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        orderCode:
+                          type: string
+                          example: "123ABC456"
+                        customer:
+                          type: string
+                          example: "John Doe"
+                        menuItems:
+                          type: string
+                          example: "Pizza, Burger"
+                        totalPayment:
+                          type: string
+                          example: "100000"
+                        status:
+                          type: string
+                          example: "DELIVERED"
+                        deliveryDetails:
+                          type: object
+                          properties:
+                            address:
+                              type: string
+                              example: "123 Main St, Ho Chi Minh City"
+                            phone:
+                              type: string
+                              example: "123456789"
+        500:
+          description: "Lỗi hệ thống"
+
+  /admin/delivery/orders/{orderCode}:
+    get:
+      tags:
+        - Delivery Orders
+      summary: "Lấy thông tin chi tiết của một đơn hàng giao hàng"
+      description: "Lấy thông tin chi tiết của đơn hàng giao hàng theo mã đơn hàng."
+      parameters:
+        - name: orderCode
+          in: path
+          required: true
+          description: "Mã đơn hàng cần lấy thông tin chi tiết"
+          schema:
+            type: string
+            example: "123ABC456"
+      responses:
+        200:
+          description: "Thông tin chi tiết của đơn hàng giao hàng"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  order:
+                    type: object
+                    properties:
+                      orderCode:
+                        type: string
+                        example: "123ABC456"
+                      totalAmount:
+                        type: number
+                        example: 100000
+                      status:
+                        type: string
+                        example: "DELIVERED"
+                      items:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: "Pizza"
+                            quantity:
+                              type: integer
+                              example: 2
+                  customer:
+                    type: object
+                    properties:
+                      fullname:
+                        type: string
+                        example: "John Doe"
+        404:
+          description: "Không tìm thấy đơn hàng"
+        500:
+          description: "Lỗi hệ thống"
 
 
 # ============================================= SCHEMA =================================================================
@@ -1876,3 +2511,95 @@ components:
         - password
         - phone
 
+    Order:
+      type: object
+      properties:
+        orderCode:
+          type: number
+          example: 1234
+        customer_id:
+          type: string
+          example: "userId123"
+        orderType:
+          type: string
+          example: "Delivery"
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                example: "Mì tôm"
+              quantity:
+                type: integer
+                example: 2
+              price:
+                type: number
+                example: 5000
+        totalAmount:
+          type: number
+          example: 10000
+        status:
+          type: string
+          example: "PAID"
+
+    PaymentLinkResponse:
+      type: object
+      properties:
+        bin:
+          type: string
+          example: "9704"
+        accountNumber:
+          type: string
+          example: "1234567890"
+        accountName:
+          type: string
+          example: "Nguyen Van A"
+        amount:
+          type: number
+          example: 5000
+        description:
+          type: string
+          example: "Thanh toán đơn hàng"
+        orderCode:
+          type: number
+          example: 1234
+        currency:
+          type: string
+          example: "VND"
+        paymentLinkId:
+          type: string
+          example: "link1234"
+        status:
+          type: string
+          example: "PAID"
+        checkoutUrl:
+          type: string
+          example: "https://example.com/payment"
+        qrCode:
+          type: string
+          example: "https://example.com/qr.png"
+
+    PaymentLink:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "link1234"
+        orderCode:
+          type: number
+          example: 1234
+        amount:
+          type: number
+          example: 5000
+        status:
+          type: string
+          example: "PAID"
+        transactions:
+          type: array
+          items:
+            type: object
+        canceledAt:
+          type: string
+          example: null
