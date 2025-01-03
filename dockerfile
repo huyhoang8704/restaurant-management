@@ -4,7 +4,7 @@ FROM node:16
 # Đặt thư mục làm việc mặc định
 WORKDIR /app
 
-# Sao chép file package.json để cài đặt dependencies trước
+# Sao chép file package.json để cài đặt dependencies trước (có cache còn add thì không)
 COPY package.json .
 
 # Cài đặt các dependencies của ứng dụng
@@ -19,4 +19,4 @@ EXPOSE 3000
 ENV NODE_ENV production
 
 # Chỉ định lệnh để khởi chạy ứng dụng
-CMD ["node", "server.js"]
+CMD ["node", "index.js"]
