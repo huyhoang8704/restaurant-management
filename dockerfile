@@ -1,22 +1,23 @@
-# Sử dụng Node.js phiên bản 16 làm base image
 FROM node:16
 
-# Đặt thư mục làm việc mặc định
+# Tạo user
+RUN useradd -m user
+
 WORKDIR /app
 
-# Sao chép file package.json để cài đặt dependencies trước (có cache còn add thì không)
+# Gán quyền cho user
+RUN chown -R user:user /app
+
+# Chuyển sang người dùng 'user'
+USER user
+
 COPY package.json .
 
-# Cài đặt các dependencies của ứng dụng
 RUN npm install
+RUN npm i nodemon --save-dev
 
-# Sao chép toàn bộ mã nguồn ứng dụng
 COPY . .
 
-# Khai báo cổng ứng dụng
 EXPOSE 3000
 
-ENV NODE_ENV production
-
-# Chỉ định lệnh để khởi chạy ứng dụng
-CMD ["node", "index.js"]
+CMD ["npm", "start"]
