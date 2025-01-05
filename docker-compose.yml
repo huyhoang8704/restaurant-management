@@ -1,5 +1,6 @@
 version: '3.8'
 services:
+# Build image từ dockerfile
   node-app:
     build:
       context: .
@@ -10,7 +11,7 @@ services:
       - MONGO_URL=${MONGO_URL}
     depends_on:
       - mongo
-
+# Pull image từ dockerhub
   mongo:
     image: mongo:6
     container_name: mongodb
