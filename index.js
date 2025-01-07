@@ -47,7 +47,7 @@ adminRoute(app);
 
 
 app.get('/', (req, res) => {
-    res.send('Restaurant Management System');
+    res.send('Restaurant Management System abc');
 });
 
 app.listen(port, () => {
