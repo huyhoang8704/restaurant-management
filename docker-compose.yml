@@ -26,6 +26,6 @@ services:
       timeout: 5s # API sau 5s chưa response, nó sẽ thất bại.
       retries: 3 # Cho phép 3 lần thất bại trước khi container bị đánh dấu là unhealth
       start_period: 5s
-
+# Tạo volume để lưu trữ dữ liệu khi container bị xóa
 volumes:
   mongo-data:
